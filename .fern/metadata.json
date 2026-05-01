@@ -1,0 +1,19 @@
+{
+  "cliVersion": "5.5.1",
+  "generatorName": "fernapi/fern-python-sdk",
+  "generatorVersion": "5.8.1",
+  "generatorConfig": {
+    "package_name": "junction",
+    "client_class_name": "Junction",
+    "pydantic_config": {
+      "enum_type": "forward_compatible_python_enums",
+      "use_pydantic_field_aliases": true
+    }
+  },
+  "originGitCommit": "05d79dd6ce370cbd029417f59eb71c056d94aa61",
+  "originGitCommitIsDirty": true,
+  "invokedBy": "ci",
+  "requestedVersion": "AUTO",
+  "ciProvider": "unknown",
+  "sdkVersion": "0.0.1"
+}
