@@ -4,7 +4,7 @@ import enum
 
 
 class JunctionEnvironment(enum.Enum):
-    PRODUCTION = "https://api.tryvital.io"
-    PRODUCTION_EU = "https://api.eu.tryvital.io"
-    SANDBOX = "https://api.sandbox.tryvital.io"
-    SANDBOX_EU = "https://api.sandbox.eu.tryvital.io"
+    PRODUCTION = "https://api.us.junction.com"
+    PRODUCTION_EU = "https://api.eu.junction.com"
+    SANDBOX = "https://api.sandbox.us.junction.com"
+    SANDBOX_EU = "https://api.sandbox.eu.junction.com"
