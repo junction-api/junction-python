@@ -5,6 +5,8 @@ import typing
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .interpretation import Interpretation
+from .lab_report_result_measurement_kind import LabReportResultMeasurementKind
+from .lab_report_result_sample_type import LabReportResultSampleType
 from .lab_report_result_type import LabReportResultType
 from .loinc_match import LoincMatch
 
@@ -12,6 +14,16 @@ from .loinc_match import LoincMatch
 class LabReportResult(UniversalBaseModel):
     test_name: str
     value: str
+    sample_type: typing.Optional[LabReportResultSampleType] = pydantic.Field(default=None)
+    """
+    ℹ️ This enum is non-exhaustive.
+    """
+
+    measurement_kind: typing.Optional[LabReportResultMeasurementKind] = pydantic.Field(default=None)
+    """
+    ℹ️ This enum is non-exhaustive.
+    """
+
     type: typing.Optional[LabReportResultType] = pydantic.Field(default=None)
     """
     ℹ️ This enum is non-exhaustive.

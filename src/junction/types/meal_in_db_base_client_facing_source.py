@@ -31,6 +31,11 @@ class MealInDbBaseClientFacingSource(UniversalBaseModel):
     """
 
     timestamp: dt.datetime
+    calendar_date: str = pydantic.Field()
+    """
+    Date of the meal in the YYYY-mm-dd format. For providers that only expose a date, this is the calendar date as recorded by the user.
+    """
+
     name: str
     energy: typing.Optional[Energy] = None
     macros: typing.Optional[Macros] = None
