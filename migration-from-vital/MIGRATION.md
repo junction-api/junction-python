@@ -19,22 +19,23 @@ Things to watch for:
 
 **Before:**
 
-```
-pip uninstall vital
+```bash
 pip install vital
+```
 
-# typical usage
+```python
 from vital import Vital
 client = Vital(api_key="YOUR_API_KEY")
 ```
 
 **After:**
 
-```
+```bash
 pip uninstall vital
 pip install junction-api-sdk
+```
 
-# typical usage
+```python
 from junction import Junction
 client = Junction(api_key="YOUR_API_KEY")
 ```
@@ -60,7 +61,7 @@ Things to watch for:
 
 **Before:**
 
-```
+```python
 from vital import Vital
 from vital.environment import VitalEnvironment
 
@@ -75,7 +76,7 @@ client = Vital(api_key="YOUR_API_KEY", base_url="https://api.tryvital.io")
 
 **After:**
 
-```
+```python
 from junction import Junction
 from junction.environment import JunctionEnvironment
 
@@ -101,7 +102,7 @@ Things to watch for:
 
 **Before:**
 
-```
+```python
 from vital import Vital, AsyncVital
 
 client = Vital(api_key="YOUR_API_KEY")
@@ -110,7 +111,7 @@ async_client = AsyncVital(api_key="YOUR_API_KEY")
 
 **After:**
 
-```
+```python
 from junction import Junction, AsyncJunction
 
 client = Junction(api_key="YOUR_API_KEY")
@@ -125,7 +126,7 @@ The same rule applies to every method that previously took a `request=` model: l
 
 **Before:**
 
-```
+```python
 from vital import Vital
 from vital.types import AppointmentBookingRequest
 
@@ -141,7 +142,7 @@ client.lab_tests.book_phlebotomy_appointment(
 
 **After:**
 
-```
+```python
 from junction import Junction
 
 client = Junction(api_key="YOUR_API_KEY")
@@ -160,14 +161,14 @@ Audit any callsite that previously dereferenced a field whose schema is now null
 
 **Before:**
 
-```
+```python
 order = client.lab_tests.get_order(order_id="order_123")
 upper_name = order.shipping_recipient_name.upper()
 ```
 
 **After:**
 
-```
+```python
 order = client.lab_tests.get_order(order_id="order_123")
 upper_name = order.shipping_recipient_name.upper() if order.shipping_recipient_name is not None else None
 ```
@@ -178,59 +179,26 @@ upper_name = order.shipping_recipient_name.upper() if order.shipping_recipient_n
 
 These methods were deprecated for years and not part of the documented Junction Link integration. Customer code that didn't reference them needs no migration. If you do have call sites, replace them with the Junction Link integration described in the API reference — there isn't a one-to-one drop-in, the legacy methods wrapped retired endpoints with no published equivalents.
 
-**Before:**
-
-```
-// example: legacy method call (now removed)
-client.link.email_auth(...);
-```
-
-**After:**
-
-```
-// no direct equivalent — see the Junction Link API reference
-```
-
-## Replace `team.get_link_config`
-
-<a id="team-removed-get-link-config"></a>
-
-Drop calls to `get_link_config`. If your application relied on its response, fetch the equivalent values via the API reference's current team-configuration endpoint, or pass per-link configuration directly when issuing the link token.
-
-**Before:**
-
-```
-from vital import Vital
-
-client = Vital(api_key="YOUR_API_KEY")
-link_config = client.team.get_link_config()
-```
-
-**After:**
-
-```
-from junction import Junction
-
-client = Junction(api_key="YOUR_API_KEY")
-# See the API reference for the current team-config endpoint;
-# link configuration is otherwise applied at link-token issuance time:
-token_response = client.link.token(user_id="u_1")
-```
-
 ## Drop imports for removed public types
 
 <a id="public-types-removed"></a>
 
-Three names were exported from the package root in the old SDK but are not present in the new SDK. `AuthType` was only used by the legacy `email_auth` flow. `ManualProviders` was the parameter type for the now-removed `connectManualProvider` method. `ClientFacingUserKey` callers should switch to `ClientFacingUser` — the endpoint previously returning `ClientFacingUserKey` now returns `ClientFacingUser`.
+Three names were exported from the package root in the old SDK but are not present in the new SDK:
+
+- `AuthType` — was only used by the legacy `email_auth` flow.
+- `ManualProviders` — was the parameter type for the now-removed `connectManualProvider` method.
+- `ClientFacingUserKey` — callers should switch to `ClientFacingUser`. The endpoint that previously returned `ClientFacingUserKey` now returns `ClientFacingUser`.
 
 **Before:**
 
-```
-from junction import AuthType, ClientFacingUserKey, ManualProviders
+```python
+from vital import AuthType, ClientFacingUserKey, ManualProviders
 ```
 
 **After:**
 
-```
-# AuthType, ClientFacingUserKey, ManualProviders have no replacement -- remove the import
+```python
+# AuthType and ManualProviders have no replacement — remove the import.
+# ClientFacingUserKey -> ClientFacingUser
+from junction import ClientFacingUser
 ```
