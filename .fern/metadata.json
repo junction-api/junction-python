@@ -1,7 +1,7 @@
 {
-  "cliVersion": "5.10.2",
+  "cliVersion": "5.18.1",
   "generatorName": "fernapi/fern-python-sdk",
-  "generatorVersion": "5.8.1",
+  "generatorVersion": "5.12.1",
   "generatorConfig": {
     "package_name": "junction",
     "client_class_name": "Junction",
@@ -10,10 +10,10 @@
       "use_pydantic_field_aliases": true
     }
   },
-  "originGitCommit": "5f82089cf81f14dcaa4eabeffe1c781fb1679c6e",
+  "originGitCommit": "3f979ee1e4cc799ef18b1ea8d8565a2dc32c5abf",
   "originGitCommitIsDirty": true,
   "invokedBy": "ci",
   "requestedVersion": "AUTO",
   "ciProvider": "unknown",
-  "sdkVersion": "1.0.0"
+  "sdkVersion": "1.1.0"
 }

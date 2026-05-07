@@ -4200,7 +4200,7 @@ client = Junction(
     environment=JunctionEnvironment.PRODUCTION,
 )
 
-client.vitals.forced_expiratory_volume_1_grouped(
+client.vitals.forced_expiratory_volume1grouped(
     user_id="user_id",
     cursor="cursor",
     next_cursor="next_cursor",
@@ -5136,7 +5136,7 @@ client = Junction(
     environment=JunctionEnvironment.PRODUCTION,
 )
 
-client.vitals.vo_2_max_grouped(
+client.vitals.vo2max_grouped(
     user_id="user_id",
     cursor="cursor",
     next_cursor="next_cursor",
@@ -8048,7 +8048,7 @@ client = Junction(
     environment=JunctionEnvironment.PRODUCTION,
 )
 
-client.vitals.vo_2_max(
+client.vitals.vo2max(
     user_id="user_id",
     provider="provider",
     start_date="start_date",
