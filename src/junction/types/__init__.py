@@ -657,6 +657,7 @@ if typing.TYPE_CHECKING:
     from .lab_location_capability import LabLocationCapability
     from .lab_location_metadata import LabLocationMetadata
     from .lab_report_result import LabReportResult
+    from .lab_report_result_loinc_match_status import LabReportResultLoincMatchStatus
     from .lab_report_result_measurement_kind import LabReportResultMeasurementKind
     from .lab_report_result_sample_type import LabReportResultSampleType
     from .lab_report_result_type import LabReportResultType
@@ -1450,6 +1451,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "LabLocationCapability": ".lab_location_capability",
     "LabLocationMetadata": ".lab_location_metadata",
     "LabReportResult": ".lab_report_result",
+    "LabReportResultLoincMatchStatus": ".lab_report_result_loinc_match_status",
     "LabReportResultMeasurementKind": ".lab_report_result_measurement_kind",
     "LabReportResultSampleType": ".lab_report_result_sample_type",
     "LabReportResultType": ".lab_report_result_type",
@@ -2259,6 +2261,7 @@ __all__ = [
     "LabLocationCapability",
     "LabLocationMetadata",
     "LabReportResult",
+    "LabReportResultLoincMatchStatus",
     "LabReportResultMeasurementKind",
     "LabReportResultSampleType",
     "LabReportResultType",
