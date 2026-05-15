@@ -1,3 +1,8 @@
+## 1.2.0 - 2026-05-15
+### Added
+* **`LabReportResultLoincMatchStatus`** — new enum type with values `AUTO_MATCH`, `NEEDS_REVIEW`, and `NO_MATCH` (non-exhaustive, with forward-compatibility support for unknown values).
+* **`LabReportResult.loinc_match_status`** — new optional field indicating the LOINC matching status of a lab result.
+
 ## 1.1.0 - 2026-05-07
 ### Added
 * **`max_retries`** — new optional constructor parameter on `Junction` and `AsyncJunction` that sets the client-level default retry count (defaults to `2`); per-request `max_retries` in `request_options` still takes precedence.

@@ -5,6 +5,7 @@ import typing
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .interpretation import Interpretation
+from .lab_report_result_loinc_match_status import LabReportResultLoincMatchStatus
 from .lab_report_result_measurement_kind import LabReportResultMeasurementKind
 from .lab_report_result_sample_type import LabReportResultSampleType
 from .lab_report_result_type import LabReportResultType
@@ -34,6 +35,11 @@ class LabReportResult(UniversalBaseModel):
     min_reference_range: typing.Optional[float] = None
     source_panel_name: typing.Optional[str] = None
     loinc_matches: typing.Optional[typing.List[LoincMatch]] = None
+    loinc_match_status: typing.Optional[LabReportResultLoincMatchStatus] = pydantic.Field(default=None)
+    """
+    ℹ️ This enum is non-exhaustive.
+    """
+
     interpretation: typing.Optional[Interpretation] = pydantic.Field(default=None)
     """
     ℹ️ This enum is non-exhaustive.
