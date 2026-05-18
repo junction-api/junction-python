@@ -1,3 +1,7 @@
+## 1.1.1 - 2026-05-18
+* SDK regeneration
+* Unable to analyze changes with AI, incrementing PATCH version.
+
 ## 1.1.0 - 2026-05-07
 ### Added
 * **`max_retries`** — new optional constructor parameter on `Junction` and `AsyncJunction` that sets the client-level default retry count (defaults to `2`); per-request `max_retries` in `request_options` still takes precedence.
