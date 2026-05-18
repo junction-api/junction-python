@@ -15832,6 +15832,97 @@ client.lab_tests.get_order(
 </dl>
 </details>
 
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">update_order</a>(...) -> PostOrderResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update a modifiable order's scheduled activation date.
+
+The order must be in `ordered` or `awaiting_registration` status. Setting
+`activate_by` to a future date reschedules dispatch; setting it to `null`
+clears the schedule and enqueues immediate dispatch for `ordered` orders.
+
+Returns 400 when:
+- the order is not in a modifiable status,
+- the order was created for immediate processing (cannot be scheduled
+  after the fact),
+- `activate_by` is in the past.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.lab_tests.update_order(
+    order_id="order_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**order_id:** `str` — Your Order ID.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**activate_by:** `typing.Optional[str]` — The date on which the order should be activated (dispatched to the lab). Must be today or a future date. Set to `null` to clear an existing scheduled date and dispatch the order immediately. Note: an order originally created for immediate processing (no `activate_by` at creation time) cannot be rescheduled — only orders that were created with an `activate_by` can have it changed or cleared.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">create_order</a>(...) -> PostOrderResponse</code></summary>
 <dl>
 <dd>

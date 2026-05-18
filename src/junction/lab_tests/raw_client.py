@@ -2680,6 +2680,84 @@ class RawLabTestsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def update_order(
+        self,
+        order_id: str,
+        *,
+        activate_by: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[PostOrderResponse]:
+        """
+        Update a modifiable order's scheduled activation date.
+
+        The order must be in `ordered` or `awaiting_registration` status. Setting
+        `activate_by` to a future date reschedules dispatch; setting it to `null`
+        clears the schedule and enqueues immediate dispatch for `ordered` orders.
+
+        Returns 400 when:
+        - the order is not in a modifiable status,
+        - the order was created for immediate processing (cannot be scheduled
+          after the fact),
+        - `activate_by` is in the past.
+
+        Parameters
+        ----------
+        order_id : str
+            Your Order ID.
+
+        activate_by : typing.Optional[str]
+            The date on which the order should be activated (dispatched to the lab). Must be today or a future date. Set to `null` to clear an existing scheduled date and dispatch the order immediately. Note: an order originally created for immediate processing (no `activate_by` at creation time) cannot be rescheduled — only orders that were created with an `activate_by` can have it changed or cleared.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[PostOrderResponse]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v3/order/{encode_path_param(order_id)}",
+            method="PATCH",
+            json={
+                "activate_by": activate_by,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    PostOrderResponse,
+                    parse_obj_as(
+                        type_=PostOrderResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     def create_order(
         self,
         *,
@@ -5751,6 +5829,84 @@ class AsyncRawLabTestsClient:
                     ClientFacingOrder,
                     parse_obj_as(
                         type_=ClientFacingOrder,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def update_order(
+        self,
+        order_id: str,
+        *,
+        activate_by: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[PostOrderResponse]:
+        """
+        Update a modifiable order's scheduled activation date.
+
+        The order must be in `ordered` or `awaiting_registration` status. Setting
+        `activate_by` to a future date reschedules dispatch; setting it to `null`
+        clears the schedule and enqueues immediate dispatch for `ordered` orders.
+
+        Returns 400 when:
+        - the order is not in a modifiable status,
+        - the order was created for immediate processing (cannot be scheduled
+          after the fact),
+        - `activate_by` is in the past.
+
+        Parameters
+        ----------
+        order_id : str
+            Your Order ID.
+
+        activate_by : typing.Optional[str]
+            The date on which the order should be activated (dispatched to the lab). Must be today or a future date. Set to `null` to clear an existing scheduled date and dispatch the order immediately. Note: an order originally created for immediate processing (no `activate_by` at creation time) cannot be rescheduled — only orders that were created with an `activate_by` can have it changed or cleared.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[PostOrderResponse]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v3/order/{encode_path_param(order_id)}",
+            method="PATCH",
+            json={
+                "activate_by": activate_by,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    PostOrderResponse,
+                    parse_obj_as(
+                        type_=PostOrderResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
