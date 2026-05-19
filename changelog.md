@@ -1,3 +1,9 @@
+## 1.2.0 - 2026-05-19
+### Added
+* **`LabTestsClient.update_order()`** and **`AsyncLabTestsClient.update_order()`** — new methods to reschedule or clear the `activate_by` date on an existing order in `ordered` or `awaiting_registration` status.
+* **`LabReportResultLoincMatchStatus`** — new non-exhaustive `StrEnum` (`auto_match`, `needs_review`, `no_match`) exported from `junction` and `junction.types`.
+* **`LabReportResult.loinc_match_status`** — new optional field on `LabReportResult` indicating the LOINC match status for a lab result.
+
 ## 1.1.0 - 2026-05-07
 ### Added
 * **`max_retries`** — new optional constructor parameter on `Junction` and `AsyncJunction` that sets the client-level default retry count (defaults to `2`); per-request `max_retries` in `request_options` still takes precedence.
