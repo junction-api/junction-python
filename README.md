@@ -3,10 +3,11 @@
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2Fjunction-api%2Fjunction-python)
 [![pypi](https://img.shields.io/pypi/v/junction-api-sdk)](https://pypi.python.org/pypi/junction-api-sdk)
 
-The Junction Python library provides convenient access to the Junction APIs from Python.
+Power Every Diagnostic Touchpoint – at Scale. Integrate 300+ wearables, streamline lab operations, and build your own lab testing experience spanning all 50 states – with a single API.
 
 ## Table of Contents
 
+- [Documentation](#documentation)
 - [Installation](#installation)
 - [Reference](#reference)
 - [Usage](#usage)
@@ -19,6 +20,10 @@ The Junction Python library provides convenient access to the Junction APIs from
   - [Timeouts](#timeouts)
   - [Custom Client](#custom-client)
 - [Contributing](#contributing)
+
+## Documentation
+
+API reference documentation is available [here](https://docs.junction.com/).
 
 ## Installation
 

@@ -516,6 +516,7 @@ if typing.TYPE_CHECKING:
     from .gender import Gender
     from .gender_identity import GenderIdentity
     from .get_markers_response import GetMarkersResponse
+    from .get_order_communication_settings_response import GetOrderCommunicationSettingsResponse
     from .get_order_transaction_response import GetOrderTransactionResponse
     from .get_orders_response import GetOrdersResponse
     from .get_team_lab_accounts_response import GetTeamLabAccountsResponse
@@ -657,6 +658,7 @@ if typing.TYPE_CHECKING:
     from .lab_location_capability import LabLocationCapability
     from .lab_location_metadata import LabLocationMetadata
     from .lab_report_result import LabReportResult
+    from .lab_report_result_loinc_match_status import LabReportResultLoincMatchStatus
     from .lab_report_result_measurement_kind import LabReportResultMeasurementKind
     from .lab_report_result_sample_type import LabReportResultSampleType
     from .lab_report_result_type import LabReportResultType
@@ -733,6 +735,8 @@ if typing.TYPE_CHECKING:
     from .parsing_job_failure_reason import ParsingJobFailureReason
     from .parsing_job_status import ParsingJobStatus
     from .password_providers import PasswordProviders
+    from .patch_order_communication_settings_body import PatchOrderCommunicationSettingsBody
+    from .patch_order_communication_settings_response import PatchOrderCommunicationSettingsResponse
     from .patient_address import PatientAddress
     from .patient_address_compatible import PatientAddressCompatible
     from .patient_address_with_validation import PatientAddressWithValidation
@@ -1311,6 +1315,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "Gender": ".gender",
     "GenderIdentity": ".gender_identity",
     "GetMarkersResponse": ".get_markers_response",
+    "GetOrderCommunicationSettingsResponse": ".get_order_communication_settings_response",
     "GetOrderTransactionResponse": ".get_order_transaction_response",
     "GetOrdersResponse": ".get_orders_response",
     "GetTeamLabAccountsResponse": ".get_team_lab_accounts_response",
@@ -1450,6 +1455,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "LabLocationCapability": ".lab_location_capability",
     "LabLocationMetadata": ".lab_location_metadata",
     "LabReportResult": ".lab_report_result",
+    "LabReportResultLoincMatchStatus": ".lab_report_result_loinc_match_status",
     "LabReportResultMeasurementKind": ".lab_report_result_measurement_kind",
     "LabReportResultSampleType": ".lab_report_result_sample_type",
     "LabReportResultType": ".lab_report_result_type",
@@ -1522,6 +1528,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ParsingJobFailureReason": ".parsing_job_failure_reason",
     "ParsingJobStatus": ".parsing_job_status",
     "PasswordProviders": ".password_providers",
+    "PatchOrderCommunicationSettingsBody": ".patch_order_communication_settings_body",
+    "PatchOrderCommunicationSettingsResponse": ".patch_order_communication_settings_response",
     "PatientAddress": ".patient_address",
     "PatientAddressCompatible": ".patient_address_compatible",
     "PatientAddressWithValidation": ".patient_address_with_validation",
@@ -2120,6 +2128,7 @@ __all__ = [
     "Gender",
     "GenderIdentity",
     "GetMarkersResponse",
+    "GetOrderCommunicationSettingsResponse",
     "GetOrderTransactionResponse",
     "GetOrdersResponse",
     "GetTeamLabAccountsResponse",
@@ -2259,6 +2268,7 @@ __all__ = [
     "LabLocationCapability",
     "LabLocationMetadata",
     "LabReportResult",
+    "LabReportResultLoincMatchStatus",
     "LabReportResultMeasurementKind",
     "LabReportResultSampleType",
     "LabReportResultType",
@@ -2331,6 +2341,8 @@ __all__ = [
     "ParsingJobFailureReason",
     "ParsingJobStatus",
     "PasswordProviders",
+    "PatchOrderCommunicationSettingsBody",
+    "PatchOrderCommunicationSettingsResponse",
     "PatientAddress",
     "PatientAddressCompatible",
     "PatientAddressWithValidation",

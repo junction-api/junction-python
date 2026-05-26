@@ -1958,6 +1958,56 @@ class LabTestsClient:
         _response = self._raw_client.get_order(order_id, request_options=request_options)
         return _response.data
 
+    def update_order(
+        self,
+        order_id: str,
+        *,
+        activate_by: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> PostOrderResponse:
+        """
+        Update a modifiable order's scheduled activation date.
+
+        The order must be in `ordered` or `awaiting_registration` status. Setting
+        `activate_by` to a future date reschedules dispatch; setting it to `null`
+        clears the schedule and enqueues immediate dispatch for `ordered` orders.
+
+        Returns 400 when:
+        - the order is not in a modifiable status,
+        - the order was created for immediate processing (cannot be scheduled
+          after the fact),
+        - `activate_by` is in the past.
+
+        Parameters
+        ----------
+        order_id : str
+            Your Order ID.
+
+        activate_by : typing.Optional[str]
+            The date on which the order should be activated (dispatched to the lab). Must be today or a future date. Set to `null` to clear an existing scheduled date and dispatch the order immediately. Note: an order originally created for immediate processing (no `activate_by` at creation time) cannot be rescheduled — only orders that were created with an `activate_by` can have it changed or cleared.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        PostOrderResponse
+            Successful Response
+
+        Examples
+        --------
+        from junction import Junction
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.lab_tests.update_order(
+            order_id="order_id",
+        )
+        """
+        _response = self._raw_client.update_order(order_id, activate_by=activate_by, request_options=request_options)
+        return _response.data
+
     def create_order(
         self,
         *,
@@ -4538,6 +4588,66 @@ class AsyncLabTestsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get_order(order_id, request_options=request_options)
+        return _response.data
+
+    async def update_order(
+        self,
+        order_id: str,
+        *,
+        activate_by: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> PostOrderResponse:
+        """
+        Update a modifiable order's scheduled activation date.
+
+        The order must be in `ordered` or `awaiting_registration` status. Setting
+        `activate_by` to a future date reschedules dispatch; setting it to `null`
+        clears the schedule and enqueues immediate dispatch for `ordered` orders.
+
+        Returns 400 when:
+        - the order is not in a modifiable status,
+        - the order was created for immediate processing (cannot be scheduled
+          after the fact),
+        - `activate_by` is in the past.
+
+        Parameters
+        ----------
+        order_id : str
+            Your Order ID.
+
+        activate_by : typing.Optional[str]
+            The date on which the order should be activated (dispatched to the lab). Must be today or a future date. Set to `null` to clear an existing scheduled date and dispatch the order immediately. Note: an order originally created for immediate processing (no `activate_by` at creation time) cannot be rescheduled — only orders that were created with an `activate_by` can have it changed or cleared.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        PostOrderResponse
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import AsyncJunction
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.lab_tests.update_order(
+                order_id="order_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.update_order(
+            order_id, activate_by=activate_by, request_options=request_options
+        )
         return _response.data
 
     async def create_order(
