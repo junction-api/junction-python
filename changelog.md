@@ -1,3 +1,10 @@
+## 1.2.0 - 2026-05-27
+### Added
+* **`LabTestsClient.update_order()`** and **`AsyncLabTestsClient.update_order()`** — new methods to update a modifiable order's scheduled activation date (`activate_by`) via `PATCH v3/order/{order_id}`; supports rescheduling to a future date or clearing the schedule for immediate dispatch.
+* **`GetOrderCommunicationSettingsResponse`**, **`PatchOrderCommunicationSettingsBody`**, and **`PatchOrderCommunicationSettingsResponse`** — new model types supporting order-level SMS communication settings management.
+* **`LabReportResultIsSensitive`** and **`LabReportResultLoincMatchStatus`** — new non-exhaustive enums for classifying lab result sensitivity and LOINC match status, respectively.
+* **`LabReportResult.is_sensitive`** and **`LabReportResult.loinc_match_status`** — new optional fields on `LabReportResult` using the new enum types above.
+
 ## 1.1.0 - 2026-05-07
 ### Added
 * **`max_retries`** — new optional constructor parameter on `Junction` and `AsyncJunction` that sets the client-level default retry count (defaults to `2`); per-request `max_retries` in `request_options` still takes precedence.
