@@ -4,6 +4,7 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .align_expr import AlignExpr
 from .query_group_by_item import QueryGroupByItem
 from .query_select_item import QuerySelectItem
 
@@ -18,6 +19,13 @@ class Query(UniversalBaseModel):
     WHERE clause uses SQL Expression syntax to describe the filtering criteria:
     * Available operators: `>`, `>=`, `<`, `<=`, `=`, `!=`, `NOT`, `AND` and `OR`.
     * Parentheses is supported.
+    """
+
+    align: typing.Optional[AlignExpr] = pydantic.Field(default=None)
+    """
+    Post-aggregation alignment clause. When a carry operator is set, missing
+    datetime buckets are materialised and filled after group_by+aggregate.
+    Omitting this field preserves honest-null behaviour.
     """
 
     if IS_PYDANTIC_V2:

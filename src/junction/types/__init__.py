@@ -18,6 +18,13 @@ if typing.TYPE_CHECKING:
     from .aggregate_field_expr_func import AggregateFieldExprFunc
     from .aggregation_response import AggregationResponse
     from .aggregation_result import AggregationResult
+    from .align_expr import AlignExpr
+    from .align_expr_carry import (
+        AlignExprCarry,
+        AlignExprCarry_CarryBackward,
+        AlignExprCarry_CarryForward,
+        AlignExprCarry_CarryNearest,
+    )
     from .allowed_radius import AllowedRadius
     from .answer import Answer
     from .ao_e import AoE
@@ -52,6 +59,9 @@ if typing.TYPE_CHECKING:
     from .bulk_op_type import BulkOpType
     from .bulk_ops_response import BulkOpsResponse
     from .canonical_candidate import CanonicalCandidate
+    from .carry_backward_expr import CarryBackwardExpr
+    from .carry_forward_expr import CarryForwardExpr
+    from .carry_nearest_expr import CarryNearestExpr
     from .cervical_mucus_entry import CervicalMucusEntry
     from .cervical_mucus_entry_quality import CervicalMucusEntryQuality
     from .chronotype_value_macro_expr import ChronotypeValueMacroExpr
@@ -658,10 +668,10 @@ if typing.TYPE_CHECKING:
     from .lab_location_capability import LabLocationCapability
     from .lab_location_metadata import LabLocationMetadata
     from .lab_report_result import LabReportResult
-    from .lab_report_result_is_sensitive import LabReportResultIsSensitive
     from .lab_report_result_loinc_match_status import LabReportResultLoincMatchStatus
     from .lab_report_result_measurement_kind import LabReportResultMeasurementKind
     from .lab_report_result_sample_type import LabReportResultSampleType
+    from .lab_report_result_sensitivity import LabReportResultSensitivity
     from .lab_report_result_type import LabReportResultType
     from .lab_results_metadata import LabResultsMetadata
     from .lab_results_raw import LabResultsRaw
@@ -886,6 +896,11 @@ _dynamic_imports: typing.Dict[str, str] = {
     "AggregateFieldExprFunc": ".aggregate_field_expr_func",
     "AggregationResponse": ".aggregation_response",
     "AggregationResult": ".aggregation_result",
+    "AlignExpr": ".align_expr",
+    "AlignExprCarry": ".align_expr_carry",
+    "AlignExprCarry_CarryBackward": ".align_expr_carry",
+    "AlignExprCarry_CarryForward": ".align_expr_carry",
+    "AlignExprCarry_CarryNearest": ".align_expr_carry",
     "AllowedRadius": ".allowed_radius",
     "Answer": ".answer",
     "AoE": ".ao_e",
@@ -920,6 +935,9 @@ _dynamic_imports: typing.Dict[str, str] = {
     "BulkOpType": ".bulk_op_type",
     "BulkOpsResponse": ".bulk_ops_response",
     "CanonicalCandidate": ".canonical_candidate",
+    "CarryBackwardExpr": ".carry_backward_expr",
+    "CarryForwardExpr": ".carry_forward_expr",
+    "CarryNearestExpr": ".carry_nearest_expr",
     "CervicalMucusEntry": ".cervical_mucus_entry",
     "CervicalMucusEntryQuality": ".cervical_mucus_entry_quality",
     "ChronotypeValueMacroExpr": ".chronotype_value_macro_expr",
@@ -1456,10 +1474,10 @@ _dynamic_imports: typing.Dict[str, str] = {
     "LabLocationCapability": ".lab_location_capability",
     "LabLocationMetadata": ".lab_location_metadata",
     "LabReportResult": ".lab_report_result",
-    "LabReportResultIsSensitive": ".lab_report_result_is_sensitive",
     "LabReportResultLoincMatchStatus": ".lab_report_result_loinc_match_status",
     "LabReportResultMeasurementKind": ".lab_report_result_measurement_kind",
     "LabReportResultSampleType": ".lab_report_result_sample_type",
+    "LabReportResultSensitivity": ".lab_report_result_sensitivity",
     "LabReportResultType": ".lab_report_result_type",
     "LabResultsMetadata": ".lab_results_metadata",
     "LabResultsRaw": ".lab_results_raw",
@@ -1700,6 +1718,11 @@ __all__ = [
     "AggregateFieldExprFunc",
     "AggregationResponse",
     "AggregationResult",
+    "AlignExpr",
+    "AlignExprCarry",
+    "AlignExprCarry_CarryBackward",
+    "AlignExprCarry_CarryForward",
+    "AlignExprCarry_CarryNearest",
     "AllowedRadius",
     "Answer",
     "AoE",
@@ -1734,6 +1757,9 @@ __all__ = [
     "BulkOpType",
     "BulkOpsResponse",
     "CanonicalCandidate",
+    "CarryBackwardExpr",
+    "CarryForwardExpr",
+    "CarryNearestExpr",
     "CervicalMucusEntry",
     "CervicalMucusEntryQuality",
     "ChronotypeValueMacroExpr",
@@ -2270,10 +2296,10 @@ __all__ = [
     "LabLocationCapability",
     "LabLocationMetadata",
     "LabReportResult",
-    "LabReportResultIsSensitive",
     "LabReportResultLoincMatchStatus",
     "LabReportResultMeasurementKind",
     "LabReportResultSampleType",
+    "LabReportResultSensitivity",
     "LabReportResultType",
     "LabResultsMetadata",
     "LabResultsRaw",

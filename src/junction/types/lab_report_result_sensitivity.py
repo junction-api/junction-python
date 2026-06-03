@@ -7,7 +7,7 @@ from ..core import enum
 T_Result = typing.TypeVar("T_Result")
 
 
-class LabReportResultIsSensitive(enum.StrEnum):
+class LabReportResultSensitivity(enum.StrEnum):
     """
     ℹ️ This enum is non-exhaustive.
     """
@@ -15,13 +15,13 @@ class LabReportResultIsSensitive(enum.StrEnum):
     SENSITIVE = "sensitive"
     INSENSITIVE = "insensitive"
     UNKNOWN = "unknown"
-    _UNKNOWN = "__LABREPORTRESULTISSENSITIVE_UNKNOWN__"
+    _UNKNOWN = "__LABREPORTRESULTSENSITIVITY_UNKNOWN__"
     """
     This member is used for forward compatibility. If the value is not recognized by the enum, it will be stored here, and the raw value is accessible through `.value`.
     """
 
     @classmethod
-    def _missing_(cls, value: typing.Any) -> "LabReportResultIsSensitive":
+    def _missing_(cls, value: typing.Any) -> "LabReportResultSensitivity":
         unknown = cls._UNKNOWN
         unknown._value_ = value
         return unknown
@@ -33,10 +33,10 @@ class LabReportResultIsSensitive(enum.StrEnum):
         unknown: typing.Callable[[], T_Result],
         _unknown_member: typing.Callable[[str], T_Result],
     ) -> T_Result:
-        if self is LabReportResultIsSensitive.SENSITIVE:
+        if self is LabReportResultSensitivity.SENSITIVE:
             return sensitive()
-        if self is LabReportResultIsSensitive.INSENSITIVE:
+        if self is LabReportResultSensitivity.INSENSITIVE:
             return insensitive()
-        if self is LabReportResultIsSensitive.UNKNOWN:
+        if self is LabReportResultSensitivity.UNKNOWN:
             return unknown()
         return _unknown_member(self._value_)
