@@ -7,6 +7,11 @@
 * **`CarryNearestExpr`** — new public symbol
 ### Changed
 * **`Query`** — new optional field(s): align
+### Beta
+* **`LabReportResult`** — field(s) removed: is_sensitive
+* **`LabReportResultIsSensitive`** — public symbol removed
+* **`LabReportResultSensitivity`** — new public symbol
+* **`ParsingJobFailureReason.visit()`** — new required parameter(s): too_many_pages
 
 ## 1.2.0 - 2026-05-27
 ### Added
