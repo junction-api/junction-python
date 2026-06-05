@@ -15,6 +15,7 @@ class ParsingJobFailureReason(enum.StrEnum):
     INVALID_INPUT = "invalid_input"
     LOW_QUALITY = "low_quality"
     NOT_ENGLISH = "not_english"
+    TOO_MANY_PAGES = "too_many_pages"
     _UNKNOWN = "__PARSINGJOBFAILUREREASON_UNKNOWN__"
     """
     This member is used for forward compatibility. If the value is not recognized by the enum, it will be stored here, and the raw value is accessible through `.value`.
@@ -31,6 +32,7 @@ class ParsingJobFailureReason(enum.StrEnum):
         invalid_input: typing.Callable[[], T_Result],
         low_quality: typing.Callable[[], T_Result],
         not_english: typing.Callable[[], T_Result],
+        too_many_pages: typing.Callable[[], T_Result],
         _unknown_member: typing.Callable[[str], T_Result],
     ) -> T_Result:
         if self is ParsingJobFailureReason.INVALID_INPUT:
@@ -39,4 +41,6 @@ class ParsingJobFailureReason(enum.StrEnum):
             return low_quality()
         if self is ParsingJobFailureReason.NOT_ENGLISH:
             return not_english()
+        if self is ParsingJobFailureReason.TOO_MANY_PAGES:
+            return too_many_pages()
         return _unknown_member(self._value_)
