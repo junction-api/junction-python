@@ -1,3 +1,13 @@
+## 1.3.0 - 2026-06-05
+### Added
+* **`AlignExpr`** — new public symbol
+* **`AlignExprCarry`** — new public symbol
+* **`CarryBackwardExpr`** — new public symbol
+* **`CarryForwardExpr`** — new public symbol
+* **`CarryNearestExpr`** — new public symbol
+### Changed
+* **`Query`** — new optional field(s): align
+
 ## 1.2.0 - 2026-05-27
 ### Added
 * **`LabTestsClient.update_order()`** and **`AsyncLabTestsClient.update_order()`** — new methods to update a modifiable order's scheduled activation date (`activate_by`) via `PATCH v3/order/{order_id}`; supports rescheduling to a future date or clearing the schedule for immediate dispatch.
