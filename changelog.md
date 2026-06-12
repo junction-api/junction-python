@@ -1,3 +1,17 @@
+## [2.0.0] - 2026-06-12
+### Breaking Changes
+- **`LabReportResultIsSensitive`** — removed; replace all references with the new **`LabReportResultSensitivity`** enum (same `sensitive` / `insensitive` / `unknown` values).
+- **`LabReportResult.is_sensitive`** — field renamed to `sensitivity` (type is now `Optional[LabReportResultSensitivity]`); update all attribute access and keyword-argument usage.
+- **`ParsingJobFailureReason.visit()`** — gains a new required `too_many_pages` keyword argument; callers that pass `visit()` arguments positionally or by keyword must add this parameter.
+
+### Added
+- **`AlignExpr`**, **`AlignExprCarry`**, **`AlignExprCarry_CarryForward`**, **`AlignExprCarry_CarryBackward`**, **`AlignExprCarry_CarryNearest`** — new types representing a post-aggregation alignment clause that materialises and fills missing datetime buckets.
+- **`CarryForwardExpr`**, **`CarryBackwardExpr`**, **`CarryNearestExpr`** — standalone carry-operator models with optional `max_age` / `span` period caps.
+
+### Changed
+- **`Query.align`** — new optional field accepting an `AlignExpr`; omitting it preserves existing honest-null behaviour.
+- **`OAuthProviders`** and **`Providers`** — new `GOOGLE_HEALTH` enum value added to both enums; `visit()` gains a corresponding required `google_health` parameter.
+
 ## 1.3.0 - 2026-06-05
 ### Added
 * **`AlignExpr`** — new public symbol
