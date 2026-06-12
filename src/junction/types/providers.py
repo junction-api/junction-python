@@ -52,6 +52,7 @@ class Providers(enum.StrEnum):
     MY_FITNESS_PAL_V2 = "my_fitness_pal_v2"
     MAP_MY_FITNESS = "map_my_fitness"
     RUNKEEPER = "runkeeper"
+    GOOGLE_HEALTH = "google_health"
     _UNKNOWN = "__PROVIDERS_UNKNOWN__"
     """
     This member is used for forward compatibility. If the value is not recognized by the enum, it will be stored here, and the raw value is accessible through `.value`.
@@ -105,6 +106,7 @@ class Providers(enum.StrEnum):
         my_fitness_pal_v2: typing.Callable[[], T_Result],
         map_my_fitness: typing.Callable[[], T_Result],
         runkeeper: typing.Callable[[], T_Result],
+        google_health: typing.Callable[[], T_Result],
         _unknown_member: typing.Callable[[str], T_Result],
     ) -> T_Result:
         if self is Providers.OURA:
@@ -187,4 +189,6 @@ class Providers(enum.StrEnum):
             return map_my_fitness()
         if self is Providers.RUNKEEPER:
             return runkeeper()
+        if self is Providers.GOOGLE_HEALTH:
+            return google_health()
         return _unknown_member(self._value_)
