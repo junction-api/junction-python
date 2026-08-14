@@ -40,8 +40,10 @@ class ElectrocardiogramClient:
         user_id : str
 
         start_date : str
+            Start date in YYYY-MM-DD
 
         end_date : typing.Optional[str]
+            End date (inclusive) in YYYY-MM-DD
 
         provider : typing.Optional[str]
             Provider oura/strava etc
@@ -106,8 +108,10 @@ class AsyncElectrocardiogramClient:
         user_id : str
 
         start_date : str
+            Start date in YYYY-MM-DD
 
         end_date : typing.Optional[str]
+            End date (inclusive) in YYYY-MM-DD
 
         provider : typing.Optional[str]
             Provider oura/strava etc

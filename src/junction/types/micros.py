@@ -9,7 +9,7 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 class Micros(UniversalBaseModel):
     minerals: typing.Optional[typing.Dict[str, typing.Optional[float]]] = pydantic.Field(default=None)
     """
-    Amount of each mineral in their respective units. Most minerals are measured in mg (milligrams), while sodium and potassium are in g (grams).
+    Amount of each mineral in milligrams (mg).
     """
 
     trace_elements: typing.Optional[typing.Dict[str, typing.Optional[float]]] = pydantic.Field(default=None)
@@ -19,7 +19,7 @@ class Micros(UniversalBaseModel):
 
     vitamins: typing.Optional[typing.Dict[str, typing.Optional[float]]] = pydantic.Field(default=None)
     """
-    Amount of each vitamin in their respective units. A, B12, D and K in μg (micrograms), while B1, B2, B3, B5, B6, C and folic acid are in mg (milligrams).
+    Amount of each vitamin in their respective units. A, B12, D, K, biotin and folic acid are in μg (micrograms), while B1, B2, B3, B5, B6, C and E are in mg (milligrams).
     """
 
     if IS_PYDANTIC_V2:

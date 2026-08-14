@@ -31,6 +31,7 @@ class BiomarkerResult(UniversalBaseModel):
     is_above_max_range: typing.Optional[bool] = None
     is_below_min_range: typing.Optional[bool] = None
     interpretation: typing.Optional[str] = None
+    source_interpretation: typing.Optional[str] = None
     loinc: typing.Optional[str] = None
     loinc_slug: typing.Optional[str] = None
     provider_id: typing.Optional[str] = None

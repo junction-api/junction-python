@@ -54,7 +54,7 @@ class TestkitClient:
         patient_address : PatientAddressWithValidation
 
         user_id : typing.Optional[str]
-            The user ID of the patient.
+            The user ID of the patient. If it differs from the user currently associated with the unregistered testkit order, the order is rebound to this user at registration time. The user must exist on the same team as the order. If omitted, the order's existing user is kept.
 
         physician : typing.Optional[PhysicianCreateRequestBase]
 
@@ -215,7 +215,7 @@ class AsyncTestkitClient:
         patient_address : PatientAddressWithValidation
 
         user_id : typing.Optional[str]
-            The user ID of the patient.
+            The user ID of the patient. If it differs from the user currently associated with the unregistered testkit order, the order is rebound to this user at registration time. The user must exist on the same team as the order. If omitted, the order's existing user is kept.
 
         physician : typing.Optional[PhysicianCreateRequestBase]
 
