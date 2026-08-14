@@ -134,6 +134,10 @@ class ClientFacingWorkout(UniversalBaseModel):
         FieldMetadata(alias="map"),
         pydantic.Field(alias="map", description="Map of the workout"),
     ] = None
+    """
+    Map of the workout
+    """
+
     provider_id: str = pydantic.Field()
     """
     Provider ID given for that specific workout

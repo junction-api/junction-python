@@ -15,6 +15,7 @@ from ..types.convert_compendium_response import ConvertCompendiumResponse
 from ..types.http_validation_error import HttpValidationError
 from ..types.search_compendium_response import SearchCompendiumResponse
 from ..types.search_mode import SearchMode
+from ..types.search_orderable_tests_response import SearchOrderableTestsResponse
 from pydantic import ValidationError
 
 # this is used as the default value for optional parameters
@@ -185,6 +186,76 @@ class RawCompendiumClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def search_orderable_tests(
+        self,
+        *,
+        provider_ids: typing.Sequence[str],
+        target_lab: CompendiumSearchLabs,
+        per_provider_limit: typing.Optional[int] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[SearchOrderableTestsResponse]:
+        """
+        Parameters
+        ----------
+        provider_ids : typing.Sequence[str]
+
+        target_lab : CompendiumSearchLabs
+            ℹ️ This enum is non-exhaustive.
+
+        per_provider_limit : typing.Optional[int]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[SearchOrderableTestsResponse]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v3/compendium/search_orderable_tests",
+            method="POST",
+            json={
+                "provider_ids": provider_ids,
+                "target_lab": target_lab,
+                "per_provider_limit": per_provider_limit,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    SearchOrderableTestsResponse,
+                    parse_obj_as(
+                        type_=SearchOrderableTestsResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
 
 class AsyncRawCompendiumClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -326,6 +397,76 @@ class AsyncRawCompendiumClient:
                     ConvertCompendiumResponse,
                     parse_obj_as(
                         type_=ConvertCompendiumResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def search_orderable_tests(
+        self,
+        *,
+        provider_ids: typing.Sequence[str],
+        target_lab: CompendiumSearchLabs,
+        per_provider_limit: typing.Optional[int] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[SearchOrderableTestsResponse]:
+        """
+        Parameters
+        ----------
+        provider_ids : typing.Sequence[str]
+
+        target_lab : CompendiumSearchLabs
+            ℹ️ This enum is non-exhaustive.
+
+        per_provider_limit : typing.Optional[int]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[SearchOrderableTestsResponse]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v3/compendium/search_orderable_tests",
+            method="POST",
+            json={
+                "provider_ids": provider_ids,
+                "target_lab": target_lab,
+                "per_provider_limit": per_provider_limit,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    SearchOrderableTestsResponse,
+                    parse_obj_as(
+                        type_=SearchOrderableTestsResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

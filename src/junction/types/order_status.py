@@ -9,8 +9,7 @@ T_Result = typing.TypeVar("T_Result")
 
 class OrderStatus(enum.StrEnum):
     """
-    Used in combination with OrderStatusDetail to represent the current order state.
-    OrderStatus is driven by a FSM whereas OrderStatusDetail is descriptive only. ℹ️ This enum is non-exhaustive.
+    ℹ️ This enum is non-exhaustive.
     """
 
     RECEIVED_WALK_IN_TEST_ORDERED = "received.walk_in_test.ordered"

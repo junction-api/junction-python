@@ -16,6 +16,10 @@ class Consent(UniversalBaseModel):
         FieldMetadata(alias="consentType"),
         pydantic.Field(alias="consentType", description="ℹ️ This enum is non-exhaustive."),
     ]
+    """
+    ℹ️ This enum is non-exhaustive.
+    """
+
     version: typing.Optional[str] = None
     time_of_consent: typing_extensions.Annotated[
         typing.Optional[dt.datetime], FieldMetadata(alias="timeOfConsent"), pydantic.Field(alias="timeOfConsent")

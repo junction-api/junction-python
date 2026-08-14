@@ -5,6 +5,7 @@ import typing
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .client_facing_marker_complete import ClientFacingMarkerComplete
+from .marker_pricing_response import MarkerPricingResponse
 
 
 class GetMarkersResponse(UniversalBaseModel):
@@ -13,6 +14,7 @@ class GetMarkersResponse(UniversalBaseModel):
     page: typing.Optional[int] = None
     size: typing.Optional[int] = None
     pages: typing.Optional[int] = None
+    pricing: typing.Optional[MarkerPricingResponse] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

@@ -28,6 +28,7 @@ class OAuthProviders(enum.StrEnum):
     MY_FITNESS_PAL_V2 = "my_fitness_pal_v2"
     ULTRAHUMAN = "ultrahuman"
     RUNKEEPER = "runkeeper"
+    GOOGLE_HEALTH = "google_health"
     _UNKNOWN = "__OAUTHPROVIDERS_UNKNOWN__"
     """
     This member is used for forward compatibility. If the value is not recognized by the enum, it will be stored here, and the raw value is accessible through `.value`.
@@ -57,6 +58,7 @@ class OAuthProviders(enum.StrEnum):
         my_fitness_pal_v2: typing.Callable[[], T_Result],
         ultrahuman: typing.Callable[[], T_Result],
         runkeeper: typing.Callable[[], T_Result],
+        google_health: typing.Callable[[], T_Result],
         _unknown_member: typing.Callable[[str], T_Result],
     ) -> T_Result:
         if self is OAuthProviders.OURA:
@@ -91,4 +93,6 @@ class OAuthProviders(enum.StrEnum):
             return ultrahuman()
         if self is OAuthProviders.RUNKEEPER:
             return runkeeper()
+        if self is OAuthProviders.GOOGLE_HEALTH:
+            return google_health()
         return _unknown_member(self._value_)

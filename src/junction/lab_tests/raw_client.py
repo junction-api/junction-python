@@ -31,8 +31,11 @@ from ..types.client_facing_labs import ClientFacingLabs
 from ..types.client_facing_marker import ClientFacingMarker
 from ..types.client_facing_order import ClientFacingOrder
 from ..types.consent import Consent
+from ..types.create_unmatched_result_test_response import CreateUnmatchedResultTestResponse
 from ..types.get_markers_response import GetMarkersResponse
 from ..types.get_orders_response import GetOrdersResponse
+from ..types.get_unmatched_result_response import GetUnmatchedResultResponse
+from ..types.get_unmatched_result_test_response import GetUnmatchedResultTestResponse
 from ..types.health_insurance_create_request import HealthInsuranceCreateRequest
 from ..types.http_validation_error import HttpValidationError
 from ..types.interpretation import Interpretation
@@ -44,6 +47,10 @@ from ..types.lab_test_generation_method_filter import LabTestGenerationMethodFil
 from ..types.lab_test_resources_response import LabTestResourcesResponse
 from ..types.lab_test_status import LabTestStatus
 from ..types.labs import Labs
+from ..types.list_unmatched_result_response import ListUnmatchedResultResponse
+from ..types.list_unmatched_result_test_cases_response import ListUnmatchedResultTestCasesResponse
+from ..types.match_decision_code import MatchDecisionCode
+from ..types.match_review_status_filter import MatchReviewStatusFilter
 from ..types.not_found_error_body import NotFoundErrorBody
 from ..types.order_activation_type import OrderActivationType
 from ..types.order_low_level_status import OrderLowLevelStatus
@@ -55,7 +62,12 @@ from ..types.patient_details_with_validation import PatientDetailsWithValidation
 from ..types.physician_create_request import PhysicianCreateRequest
 from ..types.post_order_response import PostOrderResponse
 from ..types.psc_info import PscInfo
+from ..types.result_status import ResultStatus
 from ..types.simulation_flags import SimulationFlags
+from ..types.unmatched_result import UnmatchedResult
+from ..types.unmatched_result_resolution_action import UnmatchedResultResolutionAction
+from ..types.unmatched_result_test_case import UnmatchedResultTestCase
+from ..types.unmatched_result_test_order_source import UnmatchedResultTestOrderSource
 from ..types.us_address import UsAddress
 from ..types.validate_icd_codes_response import ValidateIcdCodesResponse
 from .types.get_lab_tests_request_order_direction import GetLabTestsRequestOrderDirection
@@ -401,6 +413,7 @@ class RawLabTestsClient:
         lab_slug: typing.Optional[str] = None,
         name: typing.Optional[str] = None,
         a_la_carte_enabled: typing.Optional[bool] = None,
+        include_pricing: typing.Optional[bool] = None,
         lab_account_id: typing.Optional[str] = None,
         page: typing.Optional[int] = None,
         size: typing.Optional[int] = None,
@@ -421,6 +434,8 @@ class RawLabTestsClient:
             The name or test code of an individual biomarker or a panel.
 
         a_la_carte_enabled : typing.Optional[bool]
+
+        include_pricing : typing.Optional[bool]
 
         lab_account_id : typing.Optional[str]
             The lab account ID. This lab account is used to determine the availability of markers and lab tests.
@@ -445,6 +460,7 @@ class RawLabTestsClient:
                 "lab_slug": lab_slug,
                 "name": name,
                 "a_la_carte_enabled": a_la_carte_enabled,
+                "include_pricing": include_pricing,
                 "lab_account_id": lab_account_id,
                 "page": page,
                 "size": size,
@@ -742,6 +758,8 @@ class RawLabTestsClient:
         *,
         lab_test_limit: typing.Optional[int] = None,
         next_cursor: typing.Optional[str] = None,
+        include_pricing: typing.Optional[bool] = None,
+        lab_account_id: typing.Optional[str] = None,
         generation_method: typing.Optional[LabTestGenerationMethodFilter] = None,
         lab_slug: typing.Optional[str] = None,
         collection_method: typing.Optional[LabTestCollectionMethod] = None,
@@ -761,6 +779,12 @@ class RawLabTestsClient:
         lab_test_limit : typing.Optional[int]
 
         next_cursor : typing.Optional[str]
+            The cursor for fetching the next page, or `null` to fetch the first page.
+
+        include_pricing : typing.Optional[bool]
+
+        lab_account_id : typing.Optional[str]
+            The lab account ID. This lab account is used to determine the availability of markers and lab tests.
 
         generation_method : typing.Optional[LabTestGenerationMethodFilter]
             Filter on whether auto-generated lab tests created by Vital, manually created lab tests, or all lab tests should be returned.
@@ -801,6 +825,8 @@ class RawLabTestsClient:
             params={
                 "lab_test_limit": lab_test_limit,
                 "next_cursor": next_cursor,
+                "include_pricing": include_pricing,
+                "lab_account_id": lab_account_id,
                 "generation_method": generation_method,
                 "lab_slug": lab_slug,
                 "collection_method": collection_method,
@@ -3178,6 +3204,472 @@ class RawLabTestsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def list_unmatched_result_test_cases(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[ListUnmatchedResultTestCasesResponse]:
+        """
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[ListUnmatchedResultTestCasesResponse]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v3/unmatched_result_test/case",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ListUnmatchedResultTestCasesResponse,
+                    parse_obj_as(
+                        type_=ListUnmatchedResultTestCasesResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def create_unmatched_result_test(
+        self,
+        *,
+        idempotency_key: str,
+        case: UnmatchedResultTestCase,
+        order_source: UnmatchedResultTestOrderSource,
+        orders: typing.Optional[typing.Dict[str, typing.Optional[str]]] = OMIT,
+        result_status: typing.Optional[ResultStatus] = OMIT,
+        interpretation: typing.Optional[Interpretation] = OMIT,
+        lab_test_id: typing.Optional[str] = OMIT,
+        wrong_lab_test_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[CreateUnmatchedResultTestResponse]:
+        """
+        Parameters
+        ----------
+        idempotency_key : str
+
+        case : UnmatchedResultTestCase
+            ℹ️ This enum is non-exhaustive.
+
+        order_source : UnmatchedResultTestOrderSource
+            ℹ️ This enum is non-exhaustive.
+
+        orders : typing.Optional[typing.Dict[str, typing.Optional[str]]]
+
+        result_status : typing.Optional[ResultStatus]
+            ℹ️ This enum is non-exhaustive.
+
+        interpretation : typing.Optional[Interpretation]
+            ℹ️ This enum is non-exhaustive.
+
+        lab_test_id : typing.Optional[str]
+
+        wrong_lab_test_id : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[CreateUnmatchedResultTestResponse]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v3/unmatched_result_test",
+            method="POST",
+            json={
+                "case": case,
+                "order_source": order_source,
+                "orders": orders,
+                "result_status": result_status,
+                "interpretation": interpretation,
+                "lab_test_id": lab_test_id,
+                "wrong_lab_test_id": wrong_lab_test_id,
+            },
+            headers={
+                "content-type": "application/json",
+                "X-Idempotency-Key": str(idempotency_key) if idempotency_key is not None else None,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    CreateUnmatchedResultTestResponse,
+                    parse_obj_as(
+                        type_=CreateUnmatchedResultTestResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def get_unmatched_result_test(
+        self, run_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[GetUnmatchedResultTestResponse]:
+        """
+        Parameters
+        ----------
+        run_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[GetUnmatchedResultTestResponse]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v3/unmatched_result_test/{encode_path_param(run_id)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    GetUnmatchedResultTestResponse,
+                    parse_obj_as(
+                        type_=GetUnmatchedResultTestResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def list_unmatched_results(
+        self,
+        *,
+        limit: typing.Optional[int] = None,
+        next_cursor: typing.Optional[str] = None,
+        decision_code: typing.Optional[MatchDecisionCode] = None,
+        lab_slug: typing.Optional[str] = None,
+        status: typing.Optional[MatchReviewStatusFilter] = None,
+        created_at_start: typing.Optional[str] = None,
+        created_at_end: typing.Optional[str] = None,
+        search_input: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[ListUnmatchedResultResponse]:
+        """
+        Parameters
+        ----------
+        limit : typing.Optional[int]
+
+        next_cursor : typing.Optional[str]
+            The cursor for fetching the next page, or `null` to fetch the first page.
+
+        decision_code : typing.Optional[MatchDecisionCode]
+            Filter by match decision code.
+
+        lab_slug : typing.Optional[str]
+            Filter by lab slug (e.g. `labcorp`, `quest`).
+
+        status : typing.Optional[MatchReviewStatusFilter]
+            Filter by review status. `pending_customer_review` returns items awaiting your action; `pending_ops_review` returns items you have escalated for review.
+
+        created_at_start : typing.Optional[str]
+            Filter by result receipt date on or after this date (UTC, inclusive, YYYY-MM-DD).
+
+        created_at_end : typing.Optional[str]
+            Filter by result receipt date on or before this date (UTC, inclusive, YYYY-MM-DD).
+
+        search_input : typing.Optional[str]
+            Search by patient first name, last name, or date of birth (e.g. `Alice`, `Smith`, or `1990-01-15`).
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[ListUnmatchedResultResponse]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v3/unmatched_result",
+            method="GET",
+            params={
+                "limit": limit,
+                "next_cursor": next_cursor,
+                "decision_code": decision_code,
+                "lab_slug": lab_slug,
+                "status": status,
+                "created_at_start": created_at_start,
+                "created_at_end": created_at_end,
+                "search_input": search_input,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ListUnmatchedResultResponse,
+                    parse_obj_as(
+                        type_=ListUnmatchedResultResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def get_unmatched_result(
+        self, raw_result_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[GetUnmatchedResultResponse]:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[GetUnmatchedResultResponse]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v3/unmatched_result/{encode_path_param(raw_result_id)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    GetUnmatchedResultResponse,
+                    parse_obj_as(
+                        type_=GetUnmatchedResultResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def accept_unmatched_result(
+        self,
+        raw_result_id: str,
+        *,
+        user_id: typing.Optional[str] = OMIT,
+        order_id: typing.Optional[str] = OMIT,
+        note: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[ClientFacingOrder]:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        user_id : typing.Optional[str]
+
+        order_id : typing.Optional[str]
+
+        note : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[ClientFacingOrder]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v3/unmatched_result/{encode_path_param(raw_result_id)}/accept",
+            method="POST",
+            json={
+                "user_id": user_id,
+                "order_id": order_id,
+                "note": note,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ClientFacingOrder,
+                    parse_obj_as(
+                        type_=ClientFacingOrder,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def resolve_unmatched_result(
+        self,
+        raw_result_id: str,
+        *,
+        action: UnmatchedResultResolutionAction,
+        note: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[UnmatchedResult]:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        action : UnmatchedResultResolutionAction
+            ℹ️ This enum is non-exhaustive.
+
+        note : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[UnmatchedResult]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v3/unmatched_result/{encode_path_param(raw_result_id)}/resolve",
+            method="POST",
+            json={
+                "action": action,
+                "note": note,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    UnmatchedResult,
+                    parse_obj_as(
+                        type_=UnmatchedResult,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     def validate_icd_codes(
         self, *, codes: typing.Sequence[str], request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[ValidateIcdCodesResponse]:
@@ -3568,6 +4060,7 @@ class AsyncRawLabTestsClient:
         lab_slug: typing.Optional[str] = None,
         name: typing.Optional[str] = None,
         a_la_carte_enabled: typing.Optional[bool] = None,
+        include_pricing: typing.Optional[bool] = None,
         lab_account_id: typing.Optional[str] = None,
         page: typing.Optional[int] = None,
         size: typing.Optional[int] = None,
@@ -3588,6 +4081,8 @@ class AsyncRawLabTestsClient:
             The name or test code of an individual biomarker or a panel.
 
         a_la_carte_enabled : typing.Optional[bool]
+
+        include_pricing : typing.Optional[bool]
 
         lab_account_id : typing.Optional[str]
             The lab account ID. This lab account is used to determine the availability of markers and lab tests.
@@ -3612,6 +4107,7 @@ class AsyncRawLabTestsClient:
                 "lab_slug": lab_slug,
                 "name": name,
                 "a_la_carte_enabled": a_la_carte_enabled,
+                "include_pricing": include_pricing,
                 "lab_account_id": lab_account_id,
                 "page": page,
                 "size": size,
@@ -3909,6 +4405,8 @@ class AsyncRawLabTestsClient:
         *,
         lab_test_limit: typing.Optional[int] = None,
         next_cursor: typing.Optional[str] = None,
+        include_pricing: typing.Optional[bool] = None,
+        lab_account_id: typing.Optional[str] = None,
         generation_method: typing.Optional[LabTestGenerationMethodFilter] = None,
         lab_slug: typing.Optional[str] = None,
         collection_method: typing.Optional[LabTestCollectionMethod] = None,
@@ -3928,6 +4426,12 @@ class AsyncRawLabTestsClient:
         lab_test_limit : typing.Optional[int]
 
         next_cursor : typing.Optional[str]
+            The cursor for fetching the next page, or `null` to fetch the first page.
+
+        include_pricing : typing.Optional[bool]
+
+        lab_account_id : typing.Optional[str]
+            The lab account ID. This lab account is used to determine the availability of markers and lab tests.
 
         generation_method : typing.Optional[LabTestGenerationMethodFilter]
             Filter on whether auto-generated lab tests created by Vital, manually created lab tests, or all lab tests should be returned.
@@ -3968,6 +4472,8 @@ class AsyncRawLabTestsClient:
             params={
                 "lab_test_limit": lab_test_limit,
                 "next_cursor": next_cursor,
+                "include_pricing": include_pricing,
+                "lab_account_id": lab_account_id,
                 "generation_method": generation_method,
                 "lab_slug": lab_slug,
                 "collection_method": collection_method,
@@ -6327,6 +6833,472 @@ class AsyncRawLabTestsClient:
                     PostOrderResponse,
                     parse_obj_as(
                         type_=PostOrderResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def list_unmatched_result_test_cases(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[ListUnmatchedResultTestCasesResponse]:
+        """
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[ListUnmatchedResultTestCasesResponse]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v3/unmatched_result_test/case",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ListUnmatchedResultTestCasesResponse,
+                    parse_obj_as(
+                        type_=ListUnmatchedResultTestCasesResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def create_unmatched_result_test(
+        self,
+        *,
+        idempotency_key: str,
+        case: UnmatchedResultTestCase,
+        order_source: UnmatchedResultTestOrderSource,
+        orders: typing.Optional[typing.Dict[str, typing.Optional[str]]] = OMIT,
+        result_status: typing.Optional[ResultStatus] = OMIT,
+        interpretation: typing.Optional[Interpretation] = OMIT,
+        lab_test_id: typing.Optional[str] = OMIT,
+        wrong_lab_test_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[CreateUnmatchedResultTestResponse]:
+        """
+        Parameters
+        ----------
+        idempotency_key : str
+
+        case : UnmatchedResultTestCase
+            ℹ️ This enum is non-exhaustive.
+
+        order_source : UnmatchedResultTestOrderSource
+            ℹ️ This enum is non-exhaustive.
+
+        orders : typing.Optional[typing.Dict[str, typing.Optional[str]]]
+
+        result_status : typing.Optional[ResultStatus]
+            ℹ️ This enum is non-exhaustive.
+
+        interpretation : typing.Optional[Interpretation]
+            ℹ️ This enum is non-exhaustive.
+
+        lab_test_id : typing.Optional[str]
+
+        wrong_lab_test_id : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[CreateUnmatchedResultTestResponse]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v3/unmatched_result_test",
+            method="POST",
+            json={
+                "case": case,
+                "order_source": order_source,
+                "orders": orders,
+                "result_status": result_status,
+                "interpretation": interpretation,
+                "lab_test_id": lab_test_id,
+                "wrong_lab_test_id": wrong_lab_test_id,
+            },
+            headers={
+                "content-type": "application/json",
+                "X-Idempotency-Key": str(idempotency_key) if idempotency_key is not None else None,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    CreateUnmatchedResultTestResponse,
+                    parse_obj_as(
+                        type_=CreateUnmatchedResultTestResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def get_unmatched_result_test(
+        self, run_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[GetUnmatchedResultTestResponse]:
+        """
+        Parameters
+        ----------
+        run_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[GetUnmatchedResultTestResponse]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v3/unmatched_result_test/{encode_path_param(run_id)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    GetUnmatchedResultTestResponse,
+                    parse_obj_as(
+                        type_=GetUnmatchedResultTestResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def list_unmatched_results(
+        self,
+        *,
+        limit: typing.Optional[int] = None,
+        next_cursor: typing.Optional[str] = None,
+        decision_code: typing.Optional[MatchDecisionCode] = None,
+        lab_slug: typing.Optional[str] = None,
+        status: typing.Optional[MatchReviewStatusFilter] = None,
+        created_at_start: typing.Optional[str] = None,
+        created_at_end: typing.Optional[str] = None,
+        search_input: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[ListUnmatchedResultResponse]:
+        """
+        Parameters
+        ----------
+        limit : typing.Optional[int]
+
+        next_cursor : typing.Optional[str]
+            The cursor for fetching the next page, or `null` to fetch the first page.
+
+        decision_code : typing.Optional[MatchDecisionCode]
+            Filter by match decision code.
+
+        lab_slug : typing.Optional[str]
+            Filter by lab slug (e.g. `labcorp`, `quest`).
+
+        status : typing.Optional[MatchReviewStatusFilter]
+            Filter by review status. `pending_customer_review` returns items awaiting your action; `pending_ops_review` returns items you have escalated for review.
+
+        created_at_start : typing.Optional[str]
+            Filter by result receipt date on or after this date (UTC, inclusive, YYYY-MM-DD).
+
+        created_at_end : typing.Optional[str]
+            Filter by result receipt date on or before this date (UTC, inclusive, YYYY-MM-DD).
+
+        search_input : typing.Optional[str]
+            Search by patient first name, last name, or date of birth (e.g. `Alice`, `Smith`, or `1990-01-15`).
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[ListUnmatchedResultResponse]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v3/unmatched_result",
+            method="GET",
+            params={
+                "limit": limit,
+                "next_cursor": next_cursor,
+                "decision_code": decision_code,
+                "lab_slug": lab_slug,
+                "status": status,
+                "created_at_start": created_at_start,
+                "created_at_end": created_at_end,
+                "search_input": search_input,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ListUnmatchedResultResponse,
+                    parse_obj_as(
+                        type_=ListUnmatchedResultResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def get_unmatched_result(
+        self, raw_result_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[GetUnmatchedResultResponse]:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[GetUnmatchedResultResponse]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v3/unmatched_result/{encode_path_param(raw_result_id)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    GetUnmatchedResultResponse,
+                    parse_obj_as(
+                        type_=GetUnmatchedResultResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def accept_unmatched_result(
+        self,
+        raw_result_id: str,
+        *,
+        user_id: typing.Optional[str] = OMIT,
+        order_id: typing.Optional[str] = OMIT,
+        note: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[ClientFacingOrder]:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        user_id : typing.Optional[str]
+
+        order_id : typing.Optional[str]
+
+        note : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[ClientFacingOrder]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v3/unmatched_result/{encode_path_param(raw_result_id)}/accept",
+            method="POST",
+            json={
+                "user_id": user_id,
+                "order_id": order_id,
+                "note": note,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ClientFacingOrder,
+                    parse_obj_as(
+                        type_=ClientFacingOrder,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def resolve_unmatched_result(
+        self,
+        raw_result_id: str,
+        *,
+        action: UnmatchedResultResolutionAction,
+        note: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[UnmatchedResult]:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        action : UnmatchedResultResolutionAction
+            ℹ️ This enum is non-exhaustive.
+
+        note : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[UnmatchedResult]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v3/unmatched_result/{encode_path_param(raw_result_id)}/resolve",
+            method="POST",
+            json={
+                "action": action,
+                "note": note,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    UnmatchedResult,
+                    parse_obj_as(
+                        type_=UnmatchedResult,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

@@ -21,8 +21,11 @@ from ..types.client_facing_labs import ClientFacingLabs
 from ..types.client_facing_marker import ClientFacingMarker
 from ..types.client_facing_order import ClientFacingOrder
 from ..types.consent import Consent
+from ..types.create_unmatched_result_test_response import CreateUnmatchedResultTestResponse
 from ..types.get_markers_response import GetMarkersResponse
 from ..types.get_orders_response import GetOrdersResponse
+from ..types.get_unmatched_result_response import GetUnmatchedResultResponse
+from ..types.get_unmatched_result_test_response import GetUnmatchedResultTestResponse
 from ..types.health_insurance_create_request import HealthInsuranceCreateRequest
 from ..types.interpretation import Interpretation
 from ..types.lab_location_capability import LabLocationCapability
@@ -33,6 +36,10 @@ from ..types.lab_test_generation_method_filter import LabTestGenerationMethodFil
 from ..types.lab_test_resources_response import LabTestResourcesResponse
 from ..types.lab_test_status import LabTestStatus
 from ..types.labs import Labs
+from ..types.list_unmatched_result_response import ListUnmatchedResultResponse
+from ..types.list_unmatched_result_test_cases_response import ListUnmatchedResultTestCasesResponse
+from ..types.match_decision_code import MatchDecisionCode
+from ..types.match_review_status_filter import MatchReviewStatusFilter
 from ..types.order_activation_type import OrderActivationType
 from ..types.order_low_level_status import OrderLowLevelStatus
 from ..types.order_set_request import OrderSetRequest
@@ -43,7 +50,12 @@ from ..types.patient_details_with_validation import PatientDetailsWithValidation
 from ..types.physician_create_request import PhysicianCreateRequest
 from ..types.post_order_response import PostOrderResponse
 from ..types.psc_info import PscInfo
+from ..types.result_status import ResultStatus
 from ..types.simulation_flags import SimulationFlags
+from ..types.unmatched_result import UnmatchedResult
+from ..types.unmatched_result_resolution_action import UnmatchedResultResolutionAction
+from ..types.unmatched_result_test_case import UnmatchedResultTestCase
+from ..types.unmatched_result_test_order_source import UnmatchedResultTestOrderSource
 from ..types.us_address import UsAddress
 from ..types.validate_icd_codes_response import ValidateIcdCodesResponse
 from .raw_client import AsyncRawLabTestsClient, RawLabTestsClient
@@ -325,6 +337,7 @@ class LabTestsClient:
         lab_slug: typing.Optional[str] = None,
         name: typing.Optional[str] = None,
         a_la_carte_enabled: typing.Optional[bool] = None,
+        include_pricing: typing.Optional[bool] = None,
         lab_account_id: typing.Optional[str] = None,
         page: typing.Optional[int] = None,
         size: typing.Optional[int] = None,
@@ -345,6 +358,8 @@ class LabTestsClient:
             The name or test code of an individual biomarker or a panel.
 
         a_la_carte_enabled : typing.Optional[bool]
+
+        include_pricing : typing.Optional[bool]
 
         lab_account_id : typing.Optional[str]
             The lab account ID. This lab account is used to determine the availability of markers and lab tests.
@@ -373,6 +388,7 @@ class LabTestsClient:
             lab_slug="lab_slug",
             name="name",
             a_la_carte_enabled=True,
+            include_pricing=True,
             lab_account_id="lab_account_id",
             page=1,
             size=1,
@@ -383,6 +399,7 @@ class LabTestsClient:
             lab_slug=lab_slug,
             name=name,
             a_la_carte_enabled=a_la_carte_enabled,
+            include_pricing=include_pricing,
             lab_account_id=lab_account_id,
             page=page,
             size=size,
@@ -570,6 +587,8 @@ class LabTestsClient:
         *,
         lab_test_limit: typing.Optional[int] = None,
         next_cursor: typing.Optional[str] = None,
+        include_pricing: typing.Optional[bool] = None,
+        lab_account_id: typing.Optional[str] = None,
         generation_method: typing.Optional[LabTestGenerationMethodFilter] = None,
         lab_slug: typing.Optional[str] = None,
         collection_method: typing.Optional[LabTestCollectionMethod] = None,
@@ -589,6 +608,12 @@ class LabTestsClient:
         lab_test_limit : typing.Optional[int]
 
         next_cursor : typing.Optional[str]
+            The cursor for fetching the next page, or `null` to fetch the first page.
+
+        include_pricing : typing.Optional[bool]
+
+        lab_account_id : typing.Optional[str]
+            The lab account ID. This lab account is used to determine the availability of markers and lab tests.
 
         generation_method : typing.Optional[LabTestGenerationMethodFilter]
             Filter on whether auto-generated lab tests created by Vital, manually created lab tests, or all lab tests should be returned.
@@ -642,6 +667,8 @@ class LabTestsClient:
         client.lab_tests.get_paginated(
             lab_test_limit=1,
             next_cursor="next_cursor",
+            include_pricing=True,
+            lab_account_id="lab_account_id",
             generation_method=LabTestGenerationMethodFilter.AUTO,
             lab_slug="lab_slug",
             collection_method=LabTestCollectionMethod.TESTKIT,
@@ -656,6 +683,8 @@ class LabTestsClient:
         _response = self._raw_client.get_paginated(
             lab_test_limit=lab_test_limit,
             next_cursor=next_cursor,
+            include_pricing=include_pricing,
+            lab_account_id=lab_account_id,
             generation_method=generation_method,
             lab_slug=lab_slug,
             collection_method=collection_method,
@@ -2359,6 +2388,331 @@ class LabTestsClient:
         )
         return _response.data
 
+    def list_unmatched_result_test_cases(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> ListUnmatchedResultTestCasesResponse:
+        """
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ListUnmatchedResultTestCasesResponse
+            Successful Response
+
+        Examples
+        --------
+        from junction import Junction
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.lab_tests.list_unmatched_result_test_cases()
+        """
+        _response = self._raw_client.list_unmatched_result_test_cases(request_options=request_options)
+        return _response.data
+
+    def create_unmatched_result_test(
+        self,
+        *,
+        idempotency_key: str,
+        case: UnmatchedResultTestCase,
+        order_source: UnmatchedResultTestOrderSource,
+        orders: typing.Optional[typing.Dict[str, typing.Optional[str]]] = OMIT,
+        result_status: typing.Optional[ResultStatus] = OMIT,
+        interpretation: typing.Optional[Interpretation] = OMIT,
+        lab_test_id: typing.Optional[str] = OMIT,
+        wrong_lab_test_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> CreateUnmatchedResultTestResponse:
+        """
+        Parameters
+        ----------
+        idempotency_key : str
+
+        case : UnmatchedResultTestCase
+            ℹ️ This enum is non-exhaustive.
+
+        order_source : UnmatchedResultTestOrderSource
+            ℹ️ This enum is non-exhaustive.
+
+        orders : typing.Optional[typing.Dict[str, typing.Optional[str]]]
+
+        result_status : typing.Optional[ResultStatus]
+            ℹ️ This enum is non-exhaustive.
+
+        interpretation : typing.Optional[Interpretation]
+            ℹ️ This enum is non-exhaustive.
+
+        lab_test_id : typing.Optional[str]
+
+        wrong_lab_test_id : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        CreateUnmatchedResultTestResponse
+            Successful Response
+
+        Examples
+        --------
+        from junction import (
+            Junction,
+            UnmatchedResultTestCase,
+            UnmatchedResultTestOrderSource,
+        )
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.lab_tests.create_unmatched_result_test(
+            idempotency_key="X-Idempotency-Key",
+            case=UnmatchedResultTestCase.MATCH_COMPLETED,
+            order_source=UnmatchedResultTestOrderSource.MANAGED,
+        )
+        """
+        _response = self._raw_client.create_unmatched_result_test(
+            idempotency_key=idempotency_key,
+            case=case,
+            order_source=order_source,
+            orders=orders,
+            result_status=result_status,
+            interpretation=interpretation,
+            lab_test_id=lab_test_id,
+            wrong_lab_test_id=wrong_lab_test_id,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def get_unmatched_result_test(
+        self, run_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> GetUnmatchedResultTestResponse:
+        """
+        Parameters
+        ----------
+        run_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        GetUnmatchedResultTestResponse
+            Successful Response
+
+        Examples
+        --------
+        from junction import Junction
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.lab_tests.get_unmatched_result_test(
+            run_id="run_id",
+        )
+        """
+        _response = self._raw_client.get_unmatched_result_test(run_id, request_options=request_options)
+        return _response.data
+
+    def list_unmatched_results(
+        self,
+        *,
+        limit: typing.Optional[int] = None,
+        next_cursor: typing.Optional[str] = None,
+        decision_code: typing.Optional[MatchDecisionCode] = None,
+        lab_slug: typing.Optional[str] = None,
+        status: typing.Optional[MatchReviewStatusFilter] = None,
+        created_at_start: typing.Optional[str] = None,
+        created_at_end: typing.Optional[str] = None,
+        search_input: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ListUnmatchedResultResponse:
+        """
+        Parameters
+        ----------
+        limit : typing.Optional[int]
+
+        next_cursor : typing.Optional[str]
+            The cursor for fetching the next page, or `null` to fetch the first page.
+
+        decision_code : typing.Optional[MatchDecisionCode]
+            Filter by match decision code.
+
+        lab_slug : typing.Optional[str]
+            Filter by lab slug (e.g. `labcorp`, `quest`).
+
+        status : typing.Optional[MatchReviewStatusFilter]
+            Filter by review status. `pending_customer_review` returns items awaiting your action; `pending_ops_review` returns items you have escalated for review.
+
+        created_at_start : typing.Optional[str]
+            Filter by result receipt date on or after this date (UTC, inclusive, YYYY-MM-DD).
+
+        created_at_end : typing.Optional[str]
+            Filter by result receipt date on or before this date (UTC, inclusive, YYYY-MM-DD).
+
+        search_input : typing.Optional[str]
+            Search by patient first name, last name, or date of birth (e.g. `Alice`, `Smith`, or `1990-01-15`).
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ListUnmatchedResultResponse
+            Successful Response
+
+        Examples
+        --------
+        from junction import Junction, MatchDecisionCode, MatchReviewStatusFilter
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.lab_tests.list_unmatched_results(
+            limit=1,
+            next_cursor="next_cursor",
+            decision_code=MatchDecisionCode.MATCH_SAMPLE_ID,
+            lab_slug="lab_slug",
+            status=MatchReviewStatusFilter.PENDING_CUSTOMER_REVIEW,
+            created_at_start="created_at_start",
+            created_at_end="created_at_end",
+            search_input="search_input",
+        )
+        """
+        _response = self._raw_client.list_unmatched_results(
+            limit=limit,
+            next_cursor=next_cursor,
+            decision_code=decision_code,
+            lab_slug=lab_slug,
+            status=status,
+            created_at_start=created_at_start,
+            created_at_end=created_at_end,
+            search_input=search_input,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def get_unmatched_result(
+        self, raw_result_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> GetUnmatchedResultResponse:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        GetUnmatchedResultResponse
+            Successful Response
+
+        Examples
+        --------
+        from junction import Junction
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.lab_tests.get_unmatched_result(
+            raw_result_id="raw_result_id",
+        )
+        """
+        _response = self._raw_client.get_unmatched_result(raw_result_id, request_options=request_options)
+        return _response.data
+
+    def accept_unmatched_result(
+        self,
+        raw_result_id: str,
+        *,
+        user_id: typing.Optional[str] = OMIT,
+        order_id: typing.Optional[str] = OMIT,
+        note: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ClientFacingOrder:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        user_id : typing.Optional[str]
+
+        order_id : typing.Optional[str]
+
+        note : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ClientFacingOrder
+            Successful Response
+
+        Examples
+        --------
+        from junction import Junction
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.lab_tests.accept_unmatched_result(
+            raw_result_id="raw_result_id",
+        )
+        """
+        _response = self._raw_client.accept_unmatched_result(
+            raw_result_id, user_id=user_id, order_id=order_id, note=note, request_options=request_options
+        )
+        return _response.data
+
+    def resolve_unmatched_result(
+        self,
+        raw_result_id: str,
+        *,
+        action: UnmatchedResultResolutionAction,
+        note: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> UnmatchedResult:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        action : UnmatchedResultResolutionAction
+            ℹ️ This enum is non-exhaustive.
+
+        note : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        UnmatchedResult
+            Successful Response
+
+        Examples
+        --------
+        from junction import Junction, UnmatchedResultResolutionAction
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.lab_tests.resolve_unmatched_result(
+            raw_result_id="raw_result_id",
+            action=UnmatchedResultResolutionAction.REJECT,
+        )
+        """
+        _response = self._raw_client.resolve_unmatched_result(
+            raw_result_id, action=action, note=note, request_options=request_options
+        )
+        return _response.data
+
     def validate_icd_codes(
         self, *, codes: typing.Sequence[str], request_options: typing.Optional[RequestOptions] = None
     ) -> ValidateIcdCodesResponse:
@@ -2689,6 +3043,7 @@ class AsyncLabTestsClient:
         lab_slug: typing.Optional[str] = None,
         name: typing.Optional[str] = None,
         a_la_carte_enabled: typing.Optional[bool] = None,
+        include_pricing: typing.Optional[bool] = None,
         lab_account_id: typing.Optional[str] = None,
         page: typing.Optional[int] = None,
         size: typing.Optional[int] = None,
@@ -2709,6 +3064,8 @@ class AsyncLabTestsClient:
             The name or test code of an individual biomarker or a panel.
 
         a_la_carte_enabled : typing.Optional[bool]
+
+        include_pricing : typing.Optional[bool]
 
         lab_account_id : typing.Optional[str]
             The lab account ID. This lab account is used to determine the availability of markers and lab tests.
@@ -2742,6 +3099,7 @@ class AsyncLabTestsClient:
                 lab_slug="lab_slug",
                 name="name",
                 a_la_carte_enabled=True,
+                include_pricing=True,
                 lab_account_id="lab_account_id",
                 page=1,
                 size=1,
@@ -2755,6 +3113,7 @@ class AsyncLabTestsClient:
             lab_slug=lab_slug,
             name=name,
             a_la_carte_enabled=a_la_carte_enabled,
+            include_pricing=include_pricing,
             lab_account_id=lab_account_id,
             page=page,
             size=size,
@@ -2976,6 +3335,8 @@ class AsyncLabTestsClient:
         *,
         lab_test_limit: typing.Optional[int] = None,
         next_cursor: typing.Optional[str] = None,
+        include_pricing: typing.Optional[bool] = None,
+        lab_account_id: typing.Optional[str] = None,
         generation_method: typing.Optional[LabTestGenerationMethodFilter] = None,
         lab_slug: typing.Optional[str] = None,
         collection_method: typing.Optional[LabTestCollectionMethod] = None,
@@ -2995,6 +3356,12 @@ class AsyncLabTestsClient:
         lab_test_limit : typing.Optional[int]
 
         next_cursor : typing.Optional[str]
+            The cursor for fetching the next page, or `null` to fetch the first page.
+
+        include_pricing : typing.Optional[bool]
+
+        lab_account_id : typing.Optional[str]
+            The lab account ID. This lab account is used to determine the availability of markers and lab tests.
 
         generation_method : typing.Optional[LabTestGenerationMethodFilter]
             Filter on whether auto-generated lab tests created by Vital, manually created lab tests, or all lab tests should be returned.
@@ -3053,6 +3420,8 @@ class AsyncLabTestsClient:
             await client.lab_tests.get_paginated(
                 lab_test_limit=1,
                 next_cursor="next_cursor",
+                include_pricing=True,
+                lab_account_id="lab_account_id",
                 generation_method=LabTestGenerationMethodFilter.AUTO,
                 lab_slug="lab_slug",
                 collection_method=LabTestCollectionMethod.TESTKIT,
@@ -3070,6 +3439,8 @@ class AsyncLabTestsClient:
         _response = await self._raw_client.get_paginated(
             lab_test_limit=lab_test_limit,
             next_cursor=next_cursor,
+            include_pricing=include_pricing,
+            lab_account_id=lab_account_id,
             generation_method=generation_method,
             lab_slug=lab_slug,
             collection_method=collection_method,
@@ -5038,6 +5409,387 @@ class AsyncLabTestsClient:
         """
         _response = await self._raw_client.update_on_site_collection_order_draw_completed(
             order_id, request_options=request_options
+        )
+        return _response.data
+
+    async def list_unmatched_result_test_cases(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> ListUnmatchedResultTestCasesResponse:
+        """
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ListUnmatchedResultTestCasesResponse
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import AsyncJunction
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.lab_tests.list_unmatched_result_test_cases()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list_unmatched_result_test_cases(request_options=request_options)
+        return _response.data
+
+    async def create_unmatched_result_test(
+        self,
+        *,
+        idempotency_key: str,
+        case: UnmatchedResultTestCase,
+        order_source: UnmatchedResultTestOrderSource,
+        orders: typing.Optional[typing.Dict[str, typing.Optional[str]]] = OMIT,
+        result_status: typing.Optional[ResultStatus] = OMIT,
+        interpretation: typing.Optional[Interpretation] = OMIT,
+        lab_test_id: typing.Optional[str] = OMIT,
+        wrong_lab_test_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> CreateUnmatchedResultTestResponse:
+        """
+        Parameters
+        ----------
+        idempotency_key : str
+
+        case : UnmatchedResultTestCase
+            ℹ️ This enum is non-exhaustive.
+
+        order_source : UnmatchedResultTestOrderSource
+            ℹ️ This enum is non-exhaustive.
+
+        orders : typing.Optional[typing.Dict[str, typing.Optional[str]]]
+
+        result_status : typing.Optional[ResultStatus]
+            ℹ️ This enum is non-exhaustive.
+
+        interpretation : typing.Optional[Interpretation]
+            ℹ️ This enum is non-exhaustive.
+
+        lab_test_id : typing.Optional[str]
+
+        wrong_lab_test_id : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        CreateUnmatchedResultTestResponse
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import (
+            AsyncJunction,
+            UnmatchedResultTestCase,
+            UnmatchedResultTestOrderSource,
+        )
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.lab_tests.create_unmatched_result_test(
+                idempotency_key="X-Idempotency-Key",
+                case=UnmatchedResultTestCase.MATCH_COMPLETED,
+                order_source=UnmatchedResultTestOrderSource.MANAGED,
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.create_unmatched_result_test(
+            idempotency_key=idempotency_key,
+            case=case,
+            order_source=order_source,
+            orders=orders,
+            result_status=result_status,
+            interpretation=interpretation,
+            lab_test_id=lab_test_id,
+            wrong_lab_test_id=wrong_lab_test_id,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def get_unmatched_result_test(
+        self, run_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> GetUnmatchedResultTestResponse:
+        """
+        Parameters
+        ----------
+        run_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        GetUnmatchedResultTestResponse
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import AsyncJunction
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.lab_tests.get_unmatched_result_test(
+                run_id="run_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get_unmatched_result_test(run_id, request_options=request_options)
+        return _response.data
+
+    async def list_unmatched_results(
+        self,
+        *,
+        limit: typing.Optional[int] = None,
+        next_cursor: typing.Optional[str] = None,
+        decision_code: typing.Optional[MatchDecisionCode] = None,
+        lab_slug: typing.Optional[str] = None,
+        status: typing.Optional[MatchReviewStatusFilter] = None,
+        created_at_start: typing.Optional[str] = None,
+        created_at_end: typing.Optional[str] = None,
+        search_input: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ListUnmatchedResultResponse:
+        """
+        Parameters
+        ----------
+        limit : typing.Optional[int]
+
+        next_cursor : typing.Optional[str]
+            The cursor for fetching the next page, or `null` to fetch the first page.
+
+        decision_code : typing.Optional[MatchDecisionCode]
+            Filter by match decision code.
+
+        lab_slug : typing.Optional[str]
+            Filter by lab slug (e.g. `labcorp`, `quest`).
+
+        status : typing.Optional[MatchReviewStatusFilter]
+            Filter by review status. `pending_customer_review` returns items awaiting your action; `pending_ops_review` returns items you have escalated for review.
+
+        created_at_start : typing.Optional[str]
+            Filter by result receipt date on or after this date (UTC, inclusive, YYYY-MM-DD).
+
+        created_at_end : typing.Optional[str]
+            Filter by result receipt date on or before this date (UTC, inclusive, YYYY-MM-DD).
+
+        search_input : typing.Optional[str]
+            Search by patient first name, last name, or date of birth (e.g. `Alice`, `Smith`, or `1990-01-15`).
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ListUnmatchedResultResponse
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import AsyncJunction, MatchDecisionCode, MatchReviewStatusFilter
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.lab_tests.list_unmatched_results(
+                limit=1,
+                next_cursor="next_cursor",
+                decision_code=MatchDecisionCode.MATCH_SAMPLE_ID,
+                lab_slug="lab_slug",
+                status=MatchReviewStatusFilter.PENDING_CUSTOMER_REVIEW,
+                created_at_start="created_at_start",
+                created_at_end="created_at_end",
+                search_input="search_input",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list_unmatched_results(
+            limit=limit,
+            next_cursor=next_cursor,
+            decision_code=decision_code,
+            lab_slug=lab_slug,
+            status=status,
+            created_at_start=created_at_start,
+            created_at_end=created_at_end,
+            search_input=search_input,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def get_unmatched_result(
+        self, raw_result_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> GetUnmatchedResultResponse:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        GetUnmatchedResultResponse
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import AsyncJunction
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.lab_tests.get_unmatched_result(
+                raw_result_id="raw_result_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get_unmatched_result(raw_result_id, request_options=request_options)
+        return _response.data
+
+    async def accept_unmatched_result(
+        self,
+        raw_result_id: str,
+        *,
+        user_id: typing.Optional[str] = OMIT,
+        order_id: typing.Optional[str] = OMIT,
+        note: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ClientFacingOrder:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        user_id : typing.Optional[str]
+
+        order_id : typing.Optional[str]
+
+        note : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ClientFacingOrder
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import AsyncJunction
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.lab_tests.accept_unmatched_result(
+                raw_result_id="raw_result_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.accept_unmatched_result(
+            raw_result_id, user_id=user_id, order_id=order_id, note=note, request_options=request_options
+        )
+        return _response.data
+
+    async def resolve_unmatched_result(
+        self,
+        raw_result_id: str,
+        *,
+        action: UnmatchedResultResolutionAction,
+        note: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> UnmatchedResult:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        action : UnmatchedResultResolutionAction
+            ℹ️ This enum is non-exhaustive.
+
+        note : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        UnmatchedResult
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import AsyncJunction, UnmatchedResultResolutionAction
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.lab_tests.resolve_unmatched_result(
+                raw_result_id="raw_result_id",
+                action=UnmatchedResultResolutionAction.REJECT,
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.resolve_unmatched_result(
+            raw_result_id, action=action, note=note, request_options=request_options
         )
         return _response.data
 

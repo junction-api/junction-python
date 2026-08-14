@@ -1213,7 +1213,7 @@ client.electrocardiogram.get(
 <dl>
 <dd>
 
-**start_date:** `str` 
+**start_date:** `str` — Start date in YYYY-MM-DD
     
 </dd>
 </dl>
@@ -1221,7 +1221,7 @@ client.electrocardiogram.get(
 <dl>
 <dd>
 
-**end_date:** `typing.Optional[str]` 
+**end_date:** `typing.Optional[str]` — End date (inclusive) in YYYY-MM-DD
     
 </dd>
 </dl>
@@ -1314,7 +1314,7 @@ client.sleep_cycle.get(
 <dl>
 <dd>
 
-**start_date:** `str` 
+**start_date:** `str` — Start date in YYYY-MM-DD
     
 </dd>
 </dl>
@@ -1322,7 +1322,7 @@ client.sleep_cycle.get(
 <dl>
 <dd>
 
-**end_date:** `typing.Optional[str]` 
+**end_date:** `typing.Optional[str]` — End date (inclusive) in YYYY-MM-DD
     
 </dd>
 </dl>
@@ -2686,7 +2686,7 @@ client.menstrual_cycle.get(
 <dl>
 <dd>
 
-**start_date:** `str` 
+**start_date:** `str` — Start date in YYYY-MM-DD
     
 </dd>
 </dl>
@@ -2702,7 +2702,7 @@ client.menstrual_cycle.get(
 <dl>
 <dd>
 
-**end_date:** `typing.Optional[str]` 
+**end_date:** `typing.Optional[str]` — End date (inclusive) in YYYY-MM-DD
     
 </dd>
 </dl>
@@ -13013,6 +13013,7 @@ client.lab_tests.get_markers(
     lab_slug="lab_slug",
     name="name",
     a_la_carte_enabled=True,
+    include_pricing=True,
     lab_account_id="lab_account_id",
     page=1,
     size=1,
@@ -13057,6 +13058,14 @@ client.lab_tests.get_markers(
 <dd>
 
 **a_la_carte_enabled:** `typing.Optional[bool]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**include_pricing:** `typing.Optional[bool]` 
     
 </dd>
 </dl>
@@ -13469,6 +13478,8 @@ client = Junction(
 client.lab_tests.get_paginated(
     lab_test_limit=1,
     next_cursor="next_cursor",
+    include_pricing=True,
+    lab_account_id="lab_account_id",
     generation_method=LabTestGenerationMethodFilter.AUTO,
     lab_slug="lab_slug",
     collection_method=LabTestCollectionMethod.TESTKIT,
@@ -13506,7 +13517,23 @@ client.lab_tests.get_paginated(
 <dl>
 <dd>
 
-**next_cursor:** `typing.Optional[str]` 
+**next_cursor:** `typing.Optional[str]` — The cursor for fetching the next page, or `null` to fetch the first page.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**include_pricing:** `typing.Optional[bool]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lab_account_id:** `typing.Optional[str]` — The lab account ID. This lab account is used to determine the availability of markers and lab tests.
     
 </dd>
 </dl>
@@ -16538,6 +16565,571 @@ client.lab_tests.update_on_site_collection_order_draw_completed(
 </dl>
 </details>
 
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">list_unmatched_result_test_cases</a>() -> ListUnmatchedResultTestCasesResponse</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.lab_tests.list_unmatched_result_test_cases()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">create_unmatched_result_test</a>(...) -> CreateUnmatchedResultTestResponse</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction, UnmatchedResultTestCase, UnmatchedResultTestOrderSource
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.lab_tests.create_unmatched_result_test(
+    idempotency_key="X-Idempotency-Key",
+    case=UnmatchedResultTestCase.MATCH_COMPLETED,
+    order_source=UnmatchedResultTestOrderSource.MANAGED,
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**idempotency_key:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**case:** `UnmatchedResultTestCase` — ℹ️ This enum is non-exhaustive.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**order_source:** `UnmatchedResultTestOrderSource` — ℹ️ This enum is non-exhaustive.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**orders:** `typing.Optional[typing.Dict[str, typing.Optional[str]]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**result_status:** `typing.Optional[ResultStatus]` — ℹ️ This enum is non-exhaustive.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**interpretation:** `typing.Optional[Interpretation]` — ℹ️ This enum is non-exhaustive.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lab_test_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**wrong_lab_test_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">get_unmatched_result_test</a>(...) -> GetUnmatchedResultTestResponse</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.lab_tests.get_unmatched_result_test(
+    run_id="run_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**run_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">list_unmatched_results</a>(...) -> ListUnmatchedResultResponse</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction, MatchDecisionCode, MatchReviewStatusFilter
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.lab_tests.list_unmatched_results(
+    limit=1,
+    next_cursor="next_cursor",
+    decision_code=MatchDecisionCode.MATCH_SAMPLE_ID,
+    lab_slug="lab_slug",
+    status=MatchReviewStatusFilter.PENDING_CUSTOMER_REVIEW,
+    created_at_start="created_at_start",
+    created_at_end="created_at_end",
+    search_input="search_input",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**next_cursor:** `typing.Optional[str]` — The cursor for fetching the next page, or `null` to fetch the first page.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**decision_code:** `typing.Optional[MatchDecisionCode]` — Filter by match decision code.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lab_slug:** `typing.Optional[str]` — Filter by lab slug (e.g. `labcorp`, `quest`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `typing.Optional[MatchReviewStatusFilter]` — Filter by review status. `pending_customer_review` returns items awaiting your action; `pending_ops_review` returns items you have escalated for review.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**created_at_start:** `typing.Optional[str]` — Filter by result receipt date on or after this date (UTC, inclusive, YYYY-MM-DD).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**created_at_end:** `typing.Optional[str]` — Filter by result receipt date on or before this date (UTC, inclusive, YYYY-MM-DD).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**search_input:** `typing.Optional[str]` — Search by patient first name, last name, or date of birth (e.g. `Alice`, `Smith`, or `1990-01-15`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">get_unmatched_result</a>(...) -> GetUnmatchedResultResponse</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.lab_tests.get_unmatched_result(
+    raw_result_id="raw_result_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**raw_result_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">accept_unmatched_result</a>(...) -> ClientFacingOrder</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.lab_tests.accept_unmatched_result(
+    raw_result_id="raw_result_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**raw_result_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**user_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**order_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**note:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">resolve_unmatched_result</a>(...) -> UnmatchedResult</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction, UnmatchedResultResolutionAction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.lab_tests.resolve_unmatched_result(
+    raw_result_id="raw_result_id",
+    action=UnmatchedResultResolutionAction.REJECT,
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**raw_result_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**action:** `UnmatchedResultResolutionAction` — ℹ️ This enum is non-exhaustive.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**note:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">validate_icd_codes</a>(...) -> ValidateIcdCodesResponse</code></summary>
 <dl>
 <dd>
@@ -16771,6 +17363,84 @@ client.compendium.convert(
 <dd>
 
 **limit:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.compendium.<a href="src/junction/compendium/client.py">search_orderable_tests</a>(...) -> SearchOrderableTestsResponse</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction, CompendiumSearchLabs
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.compendium.search_orderable_tests(
+    provider_ids=[
+        "provider_ids"
+    ],
+    target_lab=CompendiumSearchLabs.LABCORP,
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**provider_ids:** `typing.List[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**target_lab:** `CompendiumSearchLabs` — ℹ️ This enum is non-exhaustive.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**per_provider_limit:** `typing.Optional[int]` 
     
 </dd>
 </dl>
@@ -17116,7 +17786,7 @@ client.testkit.register(
 <dl>
 <dd>
 
-**user_id:** `typing.Optional[str]` — The user ID of the patient.
+**user_id:** `typing.Optional[str]` — The user ID of the patient. If it differs from the user currently associated with the unregistered testkit order, the order is rebound to this user at registration time. The user must exist on the same team as the order. If omitted, the order's existing user is kept.
     
 </dd>
 </dl>
@@ -17856,7 +18526,6 @@ client = Junction(
 
 client.aggregate.query_one(
     user_id="user_id",
-    accept="*/*",
     timeframe=RelativeTimeframe(
         type="relative",
         anchor="anchor",
@@ -17968,7 +18637,6 @@ client = Junction(
 client.aggregate.get_result_table_for_continuous_query(
     user_id="user_id",
     query_id_or_slug="query_id_or_slug",
-    accept="*/*",
 )
 
 ```

@@ -26,6 +26,7 @@ class Labs(enum.StrEnum):
     NEXUS = "nexus"
     MY_UTI = "my_uti"
     CRL = "crl"
+    MTL = "mtl"
     _UNKNOWN = "__LABS_UNKNOWN__"
     """
     This member is used for forward compatibility. If the value is not recognized by the enum, it will be stored here, and the raw value is accessible through `.value`.
@@ -53,6 +54,7 @@ class Labs(enum.StrEnum):
         nexus: typing.Callable[[], T_Result],
         my_uti: typing.Callable[[], T_Result],
         crl: typing.Callable[[], T_Result],
+        mtl: typing.Callable[[], T_Result],
         _unknown_member: typing.Callable[[str], T_Result],
     ) -> T_Result:
         if self is Labs.AYUMETRIX:
@@ -83,4 +85,6 @@ class Labs(enum.StrEnum):
             return my_uti()
         if self is Labs.CRL:
             return crl()
+        if self is Labs.MTL:
+            return mtl()
         return _unknown_member(self._value_)

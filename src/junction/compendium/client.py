@@ -8,6 +8,7 @@ from ..types.compendium_search_labs import CompendiumSearchLabs
 from ..types.convert_compendium_response import ConvertCompendiumResponse
 from ..types.search_compendium_response import SearchCompendiumResponse
 from ..types.search_mode import SearchMode
+from ..types.search_orderable_tests_response import SearchOrderableTestsResponse
 from .raw_client import AsyncRawCompendiumClient, RawCompendiumClient
 
 # this is used as the default value for optional parameters
@@ -135,6 +136,52 @@ class CompendiumClient:
             lab_test_id=lab_test_id,
             provider_ids=provider_ids,
             limit=limit,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def search_orderable_tests(
+        self,
+        *,
+        provider_ids: typing.Sequence[str],
+        target_lab: CompendiumSearchLabs,
+        per_provider_limit: typing.Optional[int] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SearchOrderableTestsResponse:
+        """
+        Parameters
+        ----------
+        provider_ids : typing.Sequence[str]
+
+        target_lab : CompendiumSearchLabs
+            ℹ️ This enum is non-exhaustive.
+
+        per_provider_limit : typing.Optional[int]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SearchOrderableTestsResponse
+            Successful Response
+
+        Examples
+        --------
+        from junction import CompendiumSearchLabs, Junction
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.compendium.search_orderable_tests(
+            provider_ids=["provider_ids"],
+            target_lab=CompendiumSearchLabs.LABCORP,
+        )
+        """
+        _response = self._raw_client.search_orderable_tests(
+            provider_ids=provider_ids,
+            target_lab=target_lab,
+            per_provider_limit=per_provider_limit,
             request_options=request_options,
         )
         return _response.data
@@ -277,6 +324,60 @@ class AsyncCompendiumClient:
             lab_test_id=lab_test_id,
             provider_ids=provider_ids,
             limit=limit,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def search_orderable_tests(
+        self,
+        *,
+        provider_ids: typing.Sequence[str],
+        target_lab: CompendiumSearchLabs,
+        per_provider_limit: typing.Optional[int] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SearchOrderableTestsResponse:
+        """
+        Parameters
+        ----------
+        provider_ids : typing.Sequence[str]
+
+        target_lab : CompendiumSearchLabs
+            ℹ️ This enum is non-exhaustive.
+
+        per_provider_limit : typing.Optional[int]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SearchOrderableTestsResponse
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import AsyncJunction, CompendiumSearchLabs
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.compendium.search_orderable_tests(
+                provider_ids=["provider_ids"],
+                target_lab=CompendiumSearchLabs.LABCORP,
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.search_orderable_tests(
+            provider_ids=provider_ids,
+            target_lab=target_lab,
+            per_provider_limit=per_provider_limit,
             request_options=request_options,
         )
         return _response.data

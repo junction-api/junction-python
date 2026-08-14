@@ -38,11 +38,13 @@ class MenstrualCycleClient:
         user_id : str
 
         start_date : str
+            Start date in YYYY-MM-DD
 
         provider : typing.Optional[str]
             Provider oura/strava etc
 
         end_date : typing.Optional[str]
+            End date (inclusive) in YYYY-MM-DD
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -102,11 +104,13 @@ class AsyncMenstrualCycleClient:
         user_id : str
 
         start_date : str
+            Start date in YYYY-MM-DD
 
         provider : typing.Optional[str]
             Provider oura/strava etc
 
         end_date : typing.Optional[str]
+            End date (inclusive) in YYYY-MM-DD
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

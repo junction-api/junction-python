@@ -37,8 +37,10 @@ class RawElectrocardiogramClient:
         user_id : str
 
         start_date : str
+            Start date in YYYY-MM-DD
 
         end_date : typing.Optional[str]
+            End date (inclusive) in YYYY-MM-DD
 
         provider : typing.Optional[str]
             Provider oura/strava etc
@@ -113,8 +115,10 @@ class AsyncRawElectrocardiogramClient:
         user_id : str
 
         start_date : str
+            Start date in YYYY-MM-DD
 
         end_date : typing.Optional[str]
+            End date (inclusive) in YYYY-MM-DD
 
         provider : typing.Optional[str]
             Provider oura/strava etc
