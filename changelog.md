@@ -1,3 +1,15 @@
+## [1.5.0] - 2026-09-05
+### Added
+- **`CheckoutClient`** and **`AsyncCheckoutClient`** — new `checkout` sub-client on the root client exposing `get_checkout_session()`, `confirm_checkout_session()`, `create_quote()`, `refine_quote()`, and `get_quote()` for managing Stripe-backed checkout sessions and pricing quotes.
+- **`LabTestsClient.estimate_order_set_pricing()`** and **`AsyncLabTestsClient.estimate_order_set_pricing()`** — new methods to estimate pricing for one or more order sets given a collection modality, US state, and optional billing type.
+- **Checkout flow models** — added `CheckoutQuote`, `CheckoutQuoteLineItem`, `CheckoutQuoteLineItemCode`, `CheckoutSession`, `CheckoutSessionStatus`, and `ClientFacingCheckoutQuoteCreated` to support upfront-payment checkout sessions.
+- **Order-set pricing models** — added `EstimateOrderSetPricingResponse`, `OrderSetPricing`, `OrderSetPricingAggregatePricing`, `GenericPricingComponent`, `LabChargePricingComponent`, `PricingComponentId`, `ComponentPricingConditions`, `CriticalCarePricingCondition`, `SpecifiedPricingComponentPricingConditions`, and `PricingModifierComponentPricingConditions` for detailed per-component cost breakdowns.
+- **`WalkInCollectionNetworkSlug`** — new non-exhaustive enum identifying walk-in collection networks (`QUEST`, `SONORA_QUEST`, `LABCORP`, `BIOREFERENCE`), referenced by `CheckoutQuote`.
+
+### Changed
+- **`PricingModifierMarkerPricingConditions`** — added a new `keys` field listing the property names present in `conditions`, including names unknown to the deserializer.
+- **New enum values** — `Billing.UPFRONT_PAYMENT` and `MatchReviewStatus.PENDING_CUSTOMER_REVIEW_IN_PROGRESS` added to their respective non-exhaustive enums.
+
 ## 1.4.0 - 2026-08-14
 
 ### Added

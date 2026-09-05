@@ -4,19 +4,19 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .marker_pricing_conditions import MarkerPricingConditions
-from .pricing_modifier_marker_pricing_conditions_delta_amount_minor import (
-    PricingModifierMarkerPricingConditionsDeltaAmountMinor,
+from .component_pricing_conditions import ComponentPricingConditions
+from .pricing_modifier_component_pricing_conditions_delta_amount_minor import (
+    PricingModifierComponentPricingConditionsDeltaAmountMinor,
 )
 
 
-class PricingModifierMarkerPricingConditions(UniversalBaseModel):
-    delta_amount_minor: PricingModifierMarkerPricingConditionsDeltaAmountMinor = pydantic.Field()
+class PricingModifierComponentPricingConditions(UniversalBaseModel):
+    delta_amount_minor: PricingModifierComponentPricingConditionsDeltaAmountMinor = pydantic.Field()
     """
     Amount delta in the smallest denomination of the currency, e.g. cents for USD.
     """
 
-    conditions: MarkerPricingConditions
+    conditions: ComponentPricingConditions
     keys: typing.List[str] = pydantic.Field()
     """
     Property names present in conditions, including names unknown to a deserializer.

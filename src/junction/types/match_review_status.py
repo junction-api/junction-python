@@ -15,6 +15,7 @@ class MatchReviewStatus(enum.StrEnum):
     MATCHED = "matched"
     PENDING_CUSTOMER_REVIEW = "pending_customer_review"
     PENDING_OPS_REVIEW = "pending_ops_review"
+    PENDING_CUSTOMER_REVIEW_IN_PROGRESS = "pending_customer_review:in_progress"
     RESOLVED = "resolved"
     _UNKNOWN = "__MATCHREVIEWSTATUS_UNKNOWN__"
     """
@@ -32,6 +33,7 @@ class MatchReviewStatus(enum.StrEnum):
         matched: typing.Callable[[], T_Result],
         pending_customer_review: typing.Callable[[], T_Result],
         pending_ops_review: typing.Callable[[], T_Result],
+        pending_customer_review_in_progress: typing.Callable[[], T_Result],
         resolved: typing.Callable[[], T_Result],
         _unknown_member: typing.Callable[[str], T_Result],
     ) -> T_Result:
@@ -41,6 +43,8 @@ class MatchReviewStatus(enum.StrEnum):
             return pending_customer_review()
         if self is MatchReviewStatus.PENDING_OPS_REVIEW:
             return pending_ops_review()
+        if self is MatchReviewStatus.PENDING_CUSTOMER_REVIEW_IN_PROGRESS:
+            return pending_customer_review_in_progress()
         if self is MatchReviewStatus.RESOLVED:
             return resolved()
         return _unknown_member(self._value_)

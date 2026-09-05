@@ -32,6 +32,7 @@ from ..types.client_facing_marker import ClientFacingMarker
 from ..types.client_facing_order import ClientFacingOrder
 from ..types.consent import Consent
 from ..types.create_unmatched_result_test_response import CreateUnmatchedResultTestResponse
+from ..types.estimate_order_set_pricing_response import EstimateOrderSetPricingResponse
 from ..types.get_markers_response import GetMarkersResponse
 from ..types.get_orders_response import GetOrdersResponse
 from ..types.get_unmatched_result_response import GetUnmatchedResultResponse
@@ -744,6 +745,81 @@ class RawLabTestsClient:
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def estimate_order_set_pricing(
+        self,
+        *,
+        order_sets: typing.Sequence[OrderSetRequest],
+        modality: LabTestCollectionMethod,
+        us_state: str,
+        billing: typing.Optional[Billing] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[EstimateOrderSetPricingResponse]:
+        """
+        Parameters
+        ----------
+        order_sets : typing.Sequence[OrderSetRequest]
+
+        modality : LabTestCollectionMethod
+            ℹ️ This enum is non-exhaustive.
+
+        us_state : str
+
+        billing : typing.Optional[Billing]
+            ℹ️ This enum is non-exhaustive.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[EstimateOrderSetPricingResponse]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v3/lab_test/estimate_order_set_pricing",
+            method="POST",
+            json={
+                "order_sets": order_sets,
+                "modality": modality,
+                "us_state": us_state,
+                "billing": billing,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    EstimateOrderSetPricingResponse,
+                    parse_obj_as(
+                        type_=EstimateOrderSetPricingResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             _response_json = _response.json()
         except JSONDecodeError:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
@@ -4391,6 +4467,81 @@ class AsyncRawLabTestsClient:
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def estimate_order_set_pricing(
+        self,
+        *,
+        order_sets: typing.Sequence[OrderSetRequest],
+        modality: LabTestCollectionMethod,
+        us_state: str,
+        billing: typing.Optional[Billing] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[EstimateOrderSetPricingResponse]:
+        """
+        Parameters
+        ----------
+        order_sets : typing.Sequence[OrderSetRequest]
+
+        modality : LabTestCollectionMethod
+            ℹ️ This enum is non-exhaustive.
+
+        us_state : str
+
+        billing : typing.Optional[Billing]
+            ℹ️ This enum is non-exhaustive.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[EstimateOrderSetPricingResponse]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v3/lab_test/estimate_order_set_pricing",
+            method="POST",
+            json={
+                "order_sets": order_sets,
+                "modality": modality,
+                "us_state": us_state,
+                "billing": billing,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    EstimateOrderSetPricingResponse,
+                    parse_obj_as(
+                        type_=EstimateOrderSetPricingResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             _response_json = _response.json()
         except JSONDecodeError:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
