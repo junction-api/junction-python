@@ -13439,6 +13439,93 @@ client.lab_tests.get_labs()
 </dl>
 </details>
 
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">estimate_order_set_pricing</a>(...) -> EstimateOrderSetPricingResponse</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction, OrderSetRequest, LabTestCollectionMethod
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.lab_tests.estimate_order_set_pricing(
+    order_sets=[
+        OrderSetRequest()
+    ],
+    modality=LabTestCollectionMethod.TESTKIT,
+    us_state="us_state",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**order_sets:** `typing.List[OrderSetRequest]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**modality:** `LabTestCollectionMethod` — ℹ️ This enum is non-exhaustive.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**us_state:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**billing:** `typing.Optional[Billing]` — ℹ️ This enum is non-exhaustive.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">get_paginated</a>(...) -> LabTestResourcesResponse</code></summary>
 <dl>
 <dd>
@@ -18483,6 +18570,372 @@ client.lab_report.parser_get_job(
 <dd>
 
 **job_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Checkout
+<details><summary><code>client.checkout.<a href="src/junction/checkout/client.py">get_checkout_session</a>(...) -> CheckoutSession</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get the checkout session snapshot.
+
+In-flight sessions reflect live workflow state; terminal sessions are
+served from the persisted snapshot. A read arriving moments after session
+creation can 404 until the workflow's first persistence write commits.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.checkout.get_checkout_session(
+    checkout_session_id="checkout_session_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**checkout_session_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.checkout.<a href="src/junction/checkout/client.py">confirm_checkout_session</a>(...) -> CheckoutSession</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Confirm the checkout session after completing payment.
+
+In-flight sessions verify payment against the channel (Stripe) and report
+order progress; terminal sessions return the persisted snapshot untouched.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.checkout.confirm_checkout_session(
+    checkout_session_id="checkout_session_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**checkout_session_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.checkout.<a href="src/junction/checkout/client.py">create_quote</a>(...) -> CheckoutQuote</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction, OrderSetRequest, LabTestCollectionMethod
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.checkout.create_quote(
+    order_set=OrderSetRequest(),
+    modality=LabTestCollectionMethod.TESTKIT,
+    priority=True,
+    us_state="us_state",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**order_set:** `OrderSetRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**modality:** `LabTestCollectionMethod` — ℹ️ This enum is non-exhaustive.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**priority:** `bool` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**us_state:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.checkout.<a href="src/junction/checkout/client.py">refine_quote</a>(...) -> CheckoutQuote</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.checkout.refine_quote(
+    quote_id="quote_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**quote_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**priority:** `typing.Optional[bool]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.checkout.<a href="src/junction/checkout/client.py">get_quote</a>(...) -> CheckoutQuote</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.checkout.get_quote(
+    quote_id="quote_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**quote_id:** `str` 
     
 </dd>
 </dl>

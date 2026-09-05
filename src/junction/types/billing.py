@@ -16,6 +16,7 @@ class Billing(enum.StrEnum):
     COMMERCIAL_INSURANCE = "commercial_insurance"
     PATIENT_BILL_PASSTHROUGH = "patient_bill_passthrough"
     PATIENT_BILL = "patient_bill"
+    UPFRONT_PAYMENT = "upfront_payment"
     _UNKNOWN = "__BILLING_UNKNOWN__"
     """
     This member is used for forward compatibility. If the value is not recognized by the enum, it will be stored here, and the raw value is accessible through `.value`.
@@ -33,6 +34,7 @@ class Billing(enum.StrEnum):
         commercial_insurance: typing.Callable[[], T_Result],
         patient_bill_passthrough: typing.Callable[[], T_Result],
         patient_bill: typing.Callable[[], T_Result],
+        upfront_payment: typing.Callable[[], T_Result],
         _unknown_member: typing.Callable[[str], T_Result],
     ) -> T_Result:
         if self is Billing.CLIENT_BILL:
@@ -43,4 +45,6 @@ class Billing(enum.StrEnum):
             return patient_bill_passthrough()
         if self is Billing.PATIENT_BILL:
             return patient_bill()
+        if self is Billing.UPFRONT_PAYMENT:
+            return upfront_payment()
         return _unknown_member(self._value_)
