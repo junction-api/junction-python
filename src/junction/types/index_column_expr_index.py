@@ -14,6 +14,7 @@ class IndexColumnExprIndex(enum.StrEnum):
 
     SLEEP = "sleep"
     DERIVED_READINESS = "derived_readiness"
+    RELIABILITY = "reliability"
     ACTIVITY = "activity"
     WORKOUT = "workout"
     BODY = "body"
@@ -36,6 +37,7 @@ class IndexColumnExprIndex(enum.StrEnum):
         self,
         sleep: typing.Callable[[], T_Result],
         derived_readiness: typing.Callable[[], T_Result],
+        reliability: typing.Callable[[], T_Result],
         activity: typing.Callable[[], T_Result],
         workout: typing.Callable[[], T_Result],
         body: typing.Callable[[], T_Result],
@@ -49,6 +51,8 @@ class IndexColumnExprIndex(enum.StrEnum):
             return sleep()
         if self is IndexColumnExprIndex.DERIVED_READINESS:
             return derived_readiness()
+        if self is IndexColumnExprIndex.RELIABILITY:
+            return reliability()
         if self is IndexColumnExprIndex.ACTIVITY:
             return activity()
         if self is IndexColumnExprIndex.WORKOUT:

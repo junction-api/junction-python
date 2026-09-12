@@ -17,6 +17,7 @@ from .meal_column_expr import MealColumnExpr
 from .menstrual_cycle_column_expr import MenstrualCycleColumnExpr
 from .note_timeseries_expr import NoteTimeseriesExpr
 from .profile_column_expr import ProfileColumnExpr
+from .reliability_column_expr import ReliabilityColumnExpr
 from .sleep_column_expr import SleepColumnExpr
 from .sleep_score_value_macro_expr import SleepScoreValueMacroExpr
 from .temperature_timeseries_expr import TemperatureTimeseriesExpr
@@ -27,6 +28,7 @@ from .workout_duration_timeseries_expr import WorkoutDurationTimeseriesExpr
 UnnestExprUnnest = typing.Union[
     SleepColumnExpr,
     DerivedReadinessColumnExpr,
+    ReliabilityColumnExpr,
     ActivityColumnExpr,
     WorkoutColumnExpr,
     BodyColumnExpr,
