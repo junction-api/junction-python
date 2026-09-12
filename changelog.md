@@ -1,3 +1,13 @@
+## [1.5.0] - 2026-09-12
+### Added
+- **`CheckoutClient`** and **`AsyncCheckoutClient`** — new `checkout` sub-clients on `Junction` and `AsyncJunction` supporting the full quote-to-session lifecycle (`create_quote`, `refine_quote`, `get_quote`, `create_checkout_session`, `get_checkout_session`, `confirm_checkout_session`).
+- **`RawCheckoutClient`** and **`AsyncRawCheckoutClient`** — low-level checkout clients returning raw `HttpResponse`-wrapped results for all checkout and quote operations.
+- **`LabTestsClient.estimate_order_set_pricing()`** and **`AsyncLabTestsClient.estimate_order_set_pricing()`** — estimate pricing for one or more order sets given a collection modality, US state, and optional billing type.
+- **Checkout and pricing models** — new types including `CheckoutQuote`, `CheckoutSession`, `CheckoutSessionStatus`, `CheckoutSessionPayment`, `EstimateOrderSetPricingResponse`, `OrderSetPricing`, and related component/condition types for detailed pricing breakdowns.
+- **`ReliabilityColumnExpr`** and **`ReliabilityColumnExprReliability`** — new expression types for querying source-level data reliability metrics, usable in `QuerySelectItem`, `QueryGroupByItem`, and `UnnestExprUnnest`.
+- **`WalkInCollectionNetworkSlug`** — new non-exhaustive enum identifying walk-in collection networks (`quest`, `sonora_quest`, `labcorp`, `bioreference`).
+- **`ClientFacingCheckoutQuoteCreated`** — new webhook event model for checkout quote creation; `MatchReviewStatus.PENDING_CUSTOMER_REVIEW_IN_PROGRESS` enum value and `is_stale` field on `UnmatchedResult` also added.
+
 ## 1.4.0 - 2026-08-14
 
 ### Added

@@ -13,6 +13,7 @@ if typing.TYPE_CHECKING:
     from .activity.client import ActivityClient, AsyncActivityClient
     from .aggregate.client import AggregateClient, AsyncAggregateClient
     from .body.client import AsyncBodyClient, BodyClient
+    from .checkout.client import AsyncCheckoutClient, CheckoutClient
     from .compendium.client import AsyncCompendiumClient, CompendiumClient
     from .devices.client import AsyncDevicesClient, DevicesClient
     from .electrocardiogram.client import AsyncElectrocardiogramClient, ElectrocardiogramClient
@@ -147,6 +148,7 @@ class Junction:
         self._insurance: typing.Optional[InsuranceClient] = None
         self._payor: typing.Optional[PayorClient] = None
         self._lab_report: typing.Optional[LabReportClient] = None
+        self._checkout: typing.Optional[CheckoutClient] = None
         self._aggregate: typing.Optional[AggregateClient] = None
 
     @property
@@ -350,6 +352,14 @@ class Junction:
         return self._lab_report
 
     @property
+    def checkout(self):
+        if self._checkout is None:
+            from .checkout.client import CheckoutClient  # noqa: E402
+
+            self._checkout = CheckoutClient(client_wrapper=self._client_wrapper)
+        return self._checkout
+
+    @property
     def aggregate(self):
         if self._aggregate is None:
             from .aggregate.client import AggregateClient  # noqa: E402
@@ -483,6 +493,7 @@ class AsyncJunction:
         self._insurance: typing.Optional[AsyncInsuranceClient] = None
         self._payor: typing.Optional[AsyncPayorClient] = None
         self._lab_report: typing.Optional[AsyncLabReportClient] = None
+        self._checkout: typing.Optional[AsyncCheckoutClient] = None
         self._aggregate: typing.Optional[AsyncAggregateClient] = None
 
     @property
@@ -684,6 +695,14 @@ class AsyncJunction:
 
             self._lab_report = AsyncLabReportClient(client_wrapper=self._client_wrapper)
         return self._lab_report
+
+    @property
+    def checkout(self):
+        if self._checkout is None:
+            from .checkout.client import AsyncCheckoutClient  # noqa: E402
+
+            self._checkout = AsyncCheckoutClient(client_wrapper=self._client_wrapper)
+        return self._checkout
 
     @property
     def aggregate(self):

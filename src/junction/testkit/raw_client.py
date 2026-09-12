@@ -120,6 +120,8 @@ class RawTestkitClient:
         user_id: str,
         lab_test_id: str,
         shipping_details: ShippingAddressWithValidation,
+        idempotency_key: typing.Optional[str] = None,
+        idempotency_error: typing.Optional[typing.Literal["no-cache"]] = None,
         passthrough: typing.Optional[str] = OMIT,
         lab_account_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -134,6 +136,10 @@ class RawTestkitClient:
         lab_test_id : str
 
         shipping_details : ShippingAddressWithValidation
+
+        idempotency_key : typing.Optional[str]
+
+        idempotency_error : typing.Optional[typing.Literal["no-cache"]]
 
         passthrough : typing.Optional[str]
 
@@ -159,6 +165,8 @@ class RawTestkitClient:
             },
             headers={
                 "content-type": "application/json",
+                "X-Idempotency-Key": str(idempotency_key) if idempotency_key is not None else None,
+                "X-Idempotency-Error": str(idempotency_error) if idempotency_error is not None else None,
             },
             request_options=request_options,
             omit=OMIT,
@@ -290,6 +298,8 @@ class AsyncRawTestkitClient:
         user_id: str,
         lab_test_id: str,
         shipping_details: ShippingAddressWithValidation,
+        idempotency_key: typing.Optional[str] = None,
+        idempotency_error: typing.Optional[typing.Literal["no-cache"]] = None,
         passthrough: typing.Optional[str] = OMIT,
         lab_account_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -304,6 +314,10 @@ class AsyncRawTestkitClient:
         lab_test_id : str
 
         shipping_details : ShippingAddressWithValidation
+
+        idempotency_key : typing.Optional[str]
+
+        idempotency_error : typing.Optional[typing.Literal["no-cache"]]
 
         passthrough : typing.Optional[str]
 
@@ -329,6 +343,8 @@ class AsyncRawTestkitClient:
             },
             headers={
                 "content-type": "application/json",
+                "X-Idempotency-Key": str(idempotency_key) if idempotency_key is not None else None,
+                "X-Idempotency-Error": str(idempotency_error) if idempotency_error is not None else None,
             },
             request_options=request_options,
             omit=OMIT,
