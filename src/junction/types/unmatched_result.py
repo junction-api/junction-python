@@ -45,6 +45,7 @@ class UnmatchedResult(UniversalBaseModel):
     """
 
     note: typing.Optional[str] = None
+    is_stale: typing.Optional[bool] = None
     resolution_action: typing.Optional[MatchReviewResolutionAction] = pydantic.Field(default=None)
     """
     ℹ️ This enum is non-exhaustive.
