@@ -22,6 +22,7 @@ from ..types.client_facing_marker import ClientFacingMarker
 from ..types.client_facing_order import ClientFacingOrder
 from ..types.consent import Consent
 from ..types.create_unmatched_result_test_response import CreateUnmatchedResultTestResponse
+from ..types.estimate_order_set_pricing_response import EstimateOrderSetPricingResponse
 from ..types.get_markers_response import GetMarkersResponse
 from ..types.get_orders_response import GetOrdersResponse
 from ..types.get_unmatched_result_response import GetUnmatchedResultResponse
@@ -580,6 +581,58 @@ class LabTestsClient:
         client.lab_tests.get_labs()
         """
         _response = self._raw_client.get_labs(request_options=request_options)
+        return _response.data
+
+    def estimate_order_set_pricing(
+        self,
+        *,
+        order_sets: typing.Sequence[OrderSetRequest],
+        modality: LabTestCollectionMethod,
+        us_state: str,
+        billing: typing.Optional[Billing] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> EstimateOrderSetPricingResponse:
+        """
+        Parameters
+        ----------
+        order_sets : typing.Sequence[OrderSetRequest]
+
+        modality : LabTestCollectionMethod
+            ℹ️ This enum is non-exhaustive.
+
+        us_state : str
+
+        billing : typing.Optional[Billing]
+            ℹ️ This enum is non-exhaustive.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        EstimateOrderSetPricingResponse
+            Successful Response
+
+        Examples
+        --------
+        from junction import Junction, LabTestCollectionMethod, OrderSetRequest
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.lab_tests.estimate_order_set_pricing(
+            order_sets=[OrderSetRequest()],
+            modality=LabTestCollectionMethod.TESTKIT,
+            us_state="us_state",
+        )
+        """
+        _response = self._raw_client.estimate_order_set_pricing(
+            order_sets=order_sets,
+            modality=modality,
+            us_state=us_state,
+            billing=billing,
+            request_options=request_options,
+        )
         return _response.data
 
     def get_paginated(
@@ -3328,6 +3381,66 @@ class AsyncLabTestsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get_labs(request_options=request_options)
+        return _response.data
+
+    async def estimate_order_set_pricing(
+        self,
+        *,
+        order_sets: typing.Sequence[OrderSetRequest],
+        modality: LabTestCollectionMethod,
+        us_state: str,
+        billing: typing.Optional[Billing] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> EstimateOrderSetPricingResponse:
+        """
+        Parameters
+        ----------
+        order_sets : typing.Sequence[OrderSetRequest]
+
+        modality : LabTestCollectionMethod
+            ℹ️ This enum is non-exhaustive.
+
+        us_state : str
+
+        billing : typing.Optional[Billing]
+            ℹ️ This enum is non-exhaustive.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        EstimateOrderSetPricingResponse
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import AsyncJunction, LabTestCollectionMethod, OrderSetRequest
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.lab_tests.estimate_order_set_pricing(
+                order_sets=[OrderSetRequest()],
+                modality=LabTestCollectionMethod.TESTKIT,
+                us_state="us_state",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.estimate_order_set_pricing(
+            order_sets=order_sets,
+            modality=modality,
+            us_state=us_state,
+            billing=billing,
+            request_options=request_options,
+        )
         return _response.data
 
     async def get_paginated(

@@ -1,3 +1,12 @@
+## [1.5.0] - 2026-09-18
+### Added
+- **`CheckoutClient`** and **`AsyncCheckoutClient`** — new `checkout` sub-clients (accessible via `Junction.checkout` and `AsyncJunction.checkout`) supporting the full checkout lifecycle: creating, refining, and retrieving quotes, and creating, retrieving, and confirming checkout sessions.
+- **`RawCheckoutClient`** and **`AsyncRawCheckoutClient`** — raw HTTP-response variants of all checkout operations for callers that need direct access to response headers and status codes.
+- **`LabTestsClient.estimate_order_set_pricing()`** and **`AsyncLabTestsClient.estimate_order_set_pricing()`** — new sync and async methods to estimate pricing for one or more order sets before submission, returning an `EstimateOrderSetPricingResponse` with detailed `OrderSetPricing` breakdowns.
+- **Checkout and pricing models** — added `CheckoutQuote`, `CheckoutSession`, `CheckoutSessionStatus`, `OrderSetPricing`, `GenericPricingComponent`, `LabChargePricingComponent`, `PricingComponentId`, and related supporting types to power upfront-payment checkout flows.
+- **`TestkitClient.create()`** — now accepts optional `idempotency_key` and `idempotency_error` parameters forwarded as `X-Idempotency-Key` and `X-Idempotency-Error` request headers.
+- **New enum values and event types** — added `Billing.UPFRONT_PAYMENT`, `WalkInCollectionNetworkSlug`, `ReliabilityColumnExpr`, `ReliabilityColumnExprReliability`, and `ClientFacingCheckoutQuoteCreated` webhook event type.
+
 ## 1.4.0 - 2026-08-14
 
 ### Added
