@@ -4,13 +4,17 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .client_facing_hypnogram_timeseries import ClientFacingHypnogramTimeseries
-from .client_facing_source import ClientFacingSource
+from .generic_pricing_component_pricing import GenericPricingComponentPricing
+from .pricing_component_id import PricingComponentId
 
 
-class GroupedHypnogram(UniversalBaseModel):
-    source: ClientFacingSource
-    data: typing.List[ClientFacingHypnogramTimeseries]
+class GenericPricingComponent(UniversalBaseModel):
+    id: PricingComponentId = pydantic.Field()
+    """
+    ℹ️ This enum is non-exhaustive.
+    """
+
+    pricing: GenericPricingComponentPricing
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

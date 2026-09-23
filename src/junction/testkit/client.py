@@ -119,6 +119,8 @@ class TestkitClient:
         user_id: str,
         lab_test_id: str,
         shipping_details: ShippingAddressWithValidation,
+        idempotency_key: typing.Optional[str] = None,
+        idempotency_error: typing.Optional[typing.Literal["no-cache"]] = None,
         passthrough: typing.Optional[str] = OMIT,
         lab_account_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -133,6 +135,10 @@ class TestkitClient:
         lab_test_id : str
 
         shipping_details : ShippingAddressWithValidation
+
+        idempotency_key : typing.Optional[str]
+
+        idempotency_error : typing.Optional[typing.Literal["no-cache"]]
 
         passthrough : typing.Optional[str]
 
@@ -171,6 +177,8 @@ class TestkitClient:
             user_id=user_id,
             lab_test_id=lab_test_id,
             shipping_details=shipping_details,
+            idempotency_key=idempotency_key,
+            idempotency_error=idempotency_error,
             passthrough=passthrough,
             lab_account_id=lab_account_id,
             request_options=request_options,
@@ -288,6 +296,8 @@ class AsyncTestkitClient:
         user_id: str,
         lab_test_id: str,
         shipping_details: ShippingAddressWithValidation,
+        idempotency_key: typing.Optional[str] = None,
+        idempotency_error: typing.Optional[typing.Literal["no-cache"]] = None,
         passthrough: typing.Optional[str] = OMIT,
         lab_account_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -302,6 +312,10 @@ class AsyncTestkitClient:
         lab_test_id : str
 
         shipping_details : ShippingAddressWithValidation
+
+        idempotency_key : typing.Optional[str]
+
+        idempotency_error : typing.Optional[typing.Literal["no-cache"]]
 
         passthrough : typing.Optional[str]
 
@@ -348,6 +362,8 @@ class AsyncTestkitClient:
             user_id=user_id,
             lab_test_id=lab_test_id,
             shipping_details=shipping_details,
+            idempotency_key=idempotency_key,
+            idempotency_error=idempotency_error,
             passthrough=passthrough,
             lab_account_id=lab_account_id,
             request_options=request_options,

@@ -32,6 +32,7 @@ from ..types.client_facing_marker import ClientFacingMarker
 from ..types.client_facing_order import ClientFacingOrder
 from ..types.consent import Consent
 from ..types.create_unmatched_result_test_response import CreateUnmatchedResultTestResponse
+from ..types.estimate_order_set_pricing_response import EstimateOrderSetPricingResponse
 from ..types.get_markers_response import GetMarkersResponse
 from ..types.get_orders_response import GetOrdersResponse
 from ..types.get_unmatched_result_response import GetUnmatchedResultResponse
@@ -56,6 +57,7 @@ from ..types.order_activation_type import OrderActivationType
 from ..types.order_low_level_status import OrderLowLevelStatus
 from ..types.order_set_request import OrderSetRequest
 from ..types.order_status import OrderStatus
+from ..types.order_tracking import OrderTracking
 from ..types.patient_address import PatientAddress
 from ..types.patient_address_with_validation import PatientAddressWithValidation
 from ..types.patient_details_with_validation import PatientDetailsWithValidation
@@ -744,6 +746,81 @@ class RawLabTestsClient:
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def estimate_order_set_pricing(
+        self,
+        *,
+        order_sets: typing.Sequence[OrderSetRequest],
+        modality: LabTestCollectionMethod,
+        us_state: str,
+        billing: typing.Optional[Billing] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[EstimateOrderSetPricingResponse]:
+        """
+        Parameters
+        ----------
+        order_sets : typing.Sequence[OrderSetRequest]
+
+        modality : LabTestCollectionMethod
+            ℹ️ This enum is non-exhaustive.
+
+        us_state : str
+
+        billing : typing.Optional[Billing]
+            ℹ️ This enum is non-exhaustive.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[EstimateOrderSetPricingResponse]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v3/lab_test/estimate_order_set_pricing",
+            method="POST",
+            json={
+                "order_sets": order_sets,
+                "modality": modality,
+                "us_state": us_state,
+                "billing": billing,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    EstimateOrderSetPricingResponse,
+                    parse_obj_as(
+                        type_=EstimateOrderSetPricingResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             _response_json = _response.json()
         except JSONDecodeError:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
@@ -2445,6 +2522,60 @@ class RawLabTestsClient:
                     ClientFacingAppointment,
                     parse_obj_as(
                         type_=ClientFacingAppointment,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def get_order_tracking(
+        self, order_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[OrderTracking]:
+        """
+        Get current estimates and immutable ETA update history for an order.
+
+        Parameters
+        ----------
+        order_id : str
+            Your Order ID.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[OrderTracking]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v3/order/{encode_path_param(order_id)}/tracking",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    OrderTracking,
+                    parse_obj_as(
+                        type_=OrderTracking,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -4400,6 +4531,81 @@ class AsyncRawLabTestsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    async def estimate_order_set_pricing(
+        self,
+        *,
+        order_sets: typing.Sequence[OrderSetRequest],
+        modality: LabTestCollectionMethod,
+        us_state: str,
+        billing: typing.Optional[Billing] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[EstimateOrderSetPricingResponse]:
+        """
+        Parameters
+        ----------
+        order_sets : typing.Sequence[OrderSetRequest]
+
+        modality : LabTestCollectionMethod
+            ℹ️ This enum is non-exhaustive.
+
+        us_state : str
+
+        billing : typing.Optional[Billing]
+            ℹ️ This enum is non-exhaustive.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[EstimateOrderSetPricingResponse]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v3/lab_test/estimate_order_set_pricing",
+            method="POST",
+            json={
+                "order_sets": order_sets,
+                "modality": modality,
+                "us_state": us_state,
+                "billing": billing,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    EstimateOrderSetPricingResponse,
+                    parse_obj_as(
+                        type_=EstimateOrderSetPricingResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     async def get_paginated(
         self,
         *,
@@ -6095,6 +6301,60 @@ class AsyncRawLabTestsClient:
                     ClientFacingAppointment,
                     parse_obj_as(
                         type_=ClientFacingAppointment,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def get_order_tracking(
+        self, order_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[OrderTracking]:
+        """
+        Get current estimates and immutable ETA update history for an order.
+
+        Parameters
+        ----------
+        order_id : str
+            Your Order ID.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[OrderTracking]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v3/order/{encode_path_param(order_id)}/tracking",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    OrderTracking,
+                    parse_obj_as(
+                        type_=OrderTracking,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

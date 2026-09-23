@@ -6,14 +6,12 @@ import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .client_facing_heart_rate_timeseries import ClientFacingHeartRateTimeseries
 from .client_facing_hrv_timeseries import ClientFacingHrvTimeseries
-from .client_facing_hypnogram_timeseries import ClientFacingHypnogramTimeseries
 from .client_facing_respiratory_rate_timeseries import ClientFacingRespiratoryRateTimeseries
 
 
 class ClientFacingSleepStream(UniversalBaseModel):
     hrv: typing.Optional[typing.List[ClientFacingHrvTimeseries]] = None
     heartrate: typing.Optional[typing.List[ClientFacingHeartRateTimeseries]] = None
-    hypnogram: typing.Optional[typing.List[ClientFacingHypnogramTimeseries]] = None
     respiratory_rate: typing.Optional[typing.List[ClientFacingRespiratoryRateTimeseries]] = None
 
     if IS_PYDANTIC_V2:

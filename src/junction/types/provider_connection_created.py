@@ -10,11 +10,6 @@ from .resource_availability import ResourceAvailability
 
 class ProviderConnectionCreated(UniversalBaseModel):
     user_id: str
-    source: ClientFacingProvider = pydantic.Field()
-    """
-    Deprecated. Use `provider` instead. Subject to removal after 1 Jan 2024.
-    """
-
     provider: ClientFacingProvider
     external_user_id: typing.Optional[str] = pydantic.Field(default=None)
     """

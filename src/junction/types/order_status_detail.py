@@ -21,6 +21,15 @@ class OrderStatusDetail(enum.StrEnum):
     SAMPLE_STABILITY_EXCEEDED = "sample_stability_exceeded"
     SAMPLE_HEMOLYZED = "sample_hemolyzed"
     SAMPLE_IMPROPER_COLLECTION = "sample_improper_collection"
+    SAMPLE_DAMAGED_IN_TRANSIT = "sample_damaged_in_transit"
+    SAMPLE_INTEGRITY_COMPROMISED = "sample_integrity_compromised"
+    SAMPLE_NOT_PROVIDED = "sample_not_provided"
+    CONSENT_MISSING = "consent_missing"
+    LAB_NOT_CERTIFIED_FOR_STATE = "lab_not_certified_for_state"
+    COLLECTION_DEVICE_EXPIRED = "collection_device_expired"
+    KIT_NOT_REGISTERED = "kit_not_registered"
+    COLLECTION_SITE_UNRECOGNISED = "collection_site_unrecognised"
+    REJECTED_ON_REQUEST = "rejected_on_request"
     _UNKNOWN = "__ORDERSTATUSDETAIL_UNKNOWN__"
     """
     This member is used for forward compatibility. If the value is not recognized by the enum, it will be stored here, and the raw value is accessible through `.value`.
@@ -43,6 +52,15 @@ class OrderStatusDetail(enum.StrEnum):
         sample_stability_exceeded: typing.Callable[[], T_Result],
         sample_hemolyzed: typing.Callable[[], T_Result],
         sample_improper_collection: typing.Callable[[], T_Result],
+        sample_damaged_in_transit: typing.Callable[[], T_Result],
+        sample_integrity_compromised: typing.Callable[[], T_Result],
+        sample_not_provided: typing.Callable[[], T_Result],
+        consent_missing: typing.Callable[[], T_Result],
+        lab_not_certified_for_state: typing.Callable[[], T_Result],
+        collection_device_expired: typing.Callable[[], T_Result],
+        kit_not_registered: typing.Callable[[], T_Result],
+        collection_site_unrecognised: typing.Callable[[], T_Result],
+        rejected_on_request: typing.Callable[[], T_Result],
         _unknown_member: typing.Callable[[str], T_Result],
     ) -> T_Result:
         if self is OrderStatusDetail.FULFILLMENT_ERROR:
@@ -63,4 +81,22 @@ class OrderStatusDetail(enum.StrEnum):
             return sample_hemolyzed()
         if self is OrderStatusDetail.SAMPLE_IMPROPER_COLLECTION:
             return sample_improper_collection()
+        if self is OrderStatusDetail.SAMPLE_DAMAGED_IN_TRANSIT:
+            return sample_damaged_in_transit()
+        if self is OrderStatusDetail.SAMPLE_INTEGRITY_COMPROMISED:
+            return sample_integrity_compromised()
+        if self is OrderStatusDetail.SAMPLE_NOT_PROVIDED:
+            return sample_not_provided()
+        if self is OrderStatusDetail.CONSENT_MISSING:
+            return consent_missing()
+        if self is OrderStatusDetail.LAB_NOT_CERTIFIED_FOR_STATE:
+            return lab_not_certified_for_state()
+        if self is OrderStatusDetail.COLLECTION_DEVICE_EXPIRED:
+            return collection_device_expired()
+        if self is OrderStatusDetail.KIT_NOT_REGISTERED:
+            return kit_not_registered()
+        if self is OrderStatusDetail.COLLECTION_SITE_UNRECOGNISED:
+            return collection_site_unrecognised()
+        if self is OrderStatusDetail.REJECTED_ON_REQUEST:
+            return rejected_on_request()
         return _unknown_member(self._value_)

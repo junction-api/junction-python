@@ -81,7 +81,6 @@ class ClientFacingResource(enum.StrEnum):
     CARBOHYDRATES = "carbohydrates"
     NOTE = "note"
     SLEEP_STREAM = "sleep_stream"
-    HYPNOGRAM = "hypnogram"
     _UNKNOWN = "__CLIENTFACINGRESOURCE_UNKNOWN__"
     """
     This member is used for forward compatibility. If the value is not recognized by the enum, it will be stored here, and the raw value is accessible through `.value`.
@@ -164,7 +163,6 @@ class ClientFacingResource(enum.StrEnum):
         carbohydrates: typing.Callable[[], T_Result],
         note: typing.Callable[[], T_Result],
         sleep_stream: typing.Callable[[], T_Result],
-        hypnogram: typing.Callable[[], T_Result],
         _unknown_member: typing.Callable[[str], T_Result],
     ) -> T_Result:
         if self is ClientFacingResource.PROFILE:
@@ -305,6 +303,4 @@ class ClientFacingResource(enum.StrEnum):
             return note()
         if self is ClientFacingResource.SLEEP_STREAM:
             return sleep_stream()
-        if self is ClientFacingResource.HYPNOGRAM:
-            return hypnogram()
         return _unknown_member(self._value_)
