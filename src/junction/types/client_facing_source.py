@@ -50,21 +50,6 @@ class ClientFacingSource(UniversalBaseModel):
     For all other types, this is always `null`.
     """
 
-    name: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    Deprecated. Subject to removal after 1 Jan 2024.
-    """
-
-    slug: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    Deprecated. Use `provider` instead. Subject to removal after 1 Jan 2024.
-    """
-
-    logo: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    Deprecated. Subject to removal after 1 Jan 2024.
-    """
-
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

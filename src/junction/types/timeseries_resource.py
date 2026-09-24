@@ -31,7 +31,6 @@ class TimeseriesResource(enum.StrEnum):
     GLUCOSE = "glucose"
     HEARTRATE = "heartrate"
     HRV = "hrv"
-    HYPNOGRAM = "hypnogram"
     IGE = "ige"
     IGG = "igg"
     RESPIRATORY_RATE = "respiratory_rate"
@@ -99,7 +98,6 @@ class TimeseriesResource(enum.StrEnum):
         glucose: typing.Callable[[], T_Result],
         heartrate: typing.Callable[[], T_Result],
         hrv: typing.Callable[[], T_Result],
-        hypnogram: typing.Callable[[], T_Result],
         ige: typing.Callable[[], T_Result],
         igg: typing.Callable[[], T_Result],
         respiratory_rate: typing.Callable[[], T_Result],
@@ -175,8 +173,6 @@ class TimeseriesResource(enum.StrEnum):
             return heartrate()
         if self is TimeseriesResource.HRV:
             return hrv()
-        if self is TimeseriesResource.HYPNOGRAM:
-            return hypnogram()
         if self is TimeseriesResource.IGE:
             return ige()
         if self is TimeseriesResource.IGG:
