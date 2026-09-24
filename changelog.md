@@ -1,4 +1,21 @@
-## [1.4.1] - 2026-09-23
+## 2.0.0 - 2026-09-24
+
+### Added
+
+* **Checkout** — added sync and async clients for creating and refining quotes, creating checkout sessions, retrieving session state, and confirming payment, with checkout webhook models.
+* **Order pricing and tracking** — added sync and async lab-test methods for estimating order-set pricing and retrieving order tracking, with pricing, marker, and ETA models and an order-tracking webhook model.
+* **Test-kit idempotency** — added optional idempotency controls when creating a test-kit order.
+* **Result and status details** — added stale-result indicators and expanded order-status values.
+
+### Removed
+
+* **Legacy timeseries methods** — removed the non-grouped `vitals` methods (including `steps()` and `heartrate()`) from sync, async, and raw clients. Use the corresponding `*_grouped()` methods and handle their paginated grouped responses.
+* **Hypnogram timeseries** — removed `hypnogram()`, `hypnogram_grouped()`, their models, and the sleep-stream hypnogram field. Use sleep-cycle summaries and events.
+* **Deprecated event fields** — removed `ClientFacingSource.name`, `logo`, and `slug`; `ProviderConnectionCreated.source`; and `HistoricalPullCompleted.is_final`. Use source context, `ProviderConnectionCreated.provider`, and the completed event itself.
+
+### Beta
+
+* **Horizon AI device reliability** — added reliability columns for query selection, grouping, and aggregate expressions.
 
 ## 1.4.0 - 2026-08-14
 
