@@ -13,6 +13,7 @@ from ..core.request_options import RequestOptions
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.checkout_quote import CheckoutQuote
 from ..types.checkout_session import CheckoutSession
+from ..types.checkout_session_appointment import CheckoutSessionAppointment
 from ..types.checkout_session_payment import CheckoutSessionPayment
 from ..types.http_validation_error import HttpValidationError
 from ..types.lab_test_collection_method import LabTestCollectionMethod
@@ -38,6 +39,7 @@ class RawCheckoutClient:
         patient_details: PatientDetailsWithValidation,
         patient_address: PatientAddressWithValidation,
         idempotency_key: typing.Optional[str] = None,
+        appointment: typing.Optional[CheckoutSessionAppointment] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[CheckoutSession]:
         """
@@ -62,6 +64,8 @@ class RawCheckoutClient:
 
         idempotency_key : typing.Optional[str]
 
+        appointment : typing.Optional[CheckoutSessionAppointment]
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -79,6 +83,7 @@ class RawCheckoutClient:
                 "payment": payment,
                 "patient_details": patient_details,
                 "patient_address": patient_address,
+                "appointment": appointment,
             },
             headers={
                 "content-type": "application/json",
@@ -433,6 +438,7 @@ class AsyncRawCheckoutClient:
         patient_details: PatientDetailsWithValidation,
         patient_address: PatientAddressWithValidation,
         idempotency_key: typing.Optional[str] = None,
+        appointment: typing.Optional[CheckoutSessionAppointment] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[CheckoutSession]:
         """
@@ -457,6 +463,8 @@ class AsyncRawCheckoutClient:
 
         idempotency_key : typing.Optional[str]
 
+        appointment : typing.Optional[CheckoutSessionAppointment]
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -474,6 +482,7 @@ class AsyncRawCheckoutClient:
                 "payment": payment,
                 "patient_details": patient_details,
                 "patient_address": patient_address,
+                "appointment": appointment,
             },
             headers={
                 "content-type": "application/json",

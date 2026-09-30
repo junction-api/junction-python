@@ -10376,6 +10376,14 @@ client.lab_tests.create(
 <dl>
 <dd>
 
+**source_sandbox_lab_test_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -11013,6 +11021,67 @@ client.lab_tests.get_labs()
 </dl>
 </details>
 
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">list_promotions</a>(...) -> typing.List[LabTestPromotion]</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.lab_tests.list_promotions(
+    source_sandbox_lab_test_ids=[
+        "source_sandbox_lab_test_ids"
+    ],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**source_sandbox_lab_test_ids:** `typing.Optional[typing.Union[str, typing.Sequence[str]]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">estimate_order_set_pricing</a>(...) -> EstimateOrderSetPricingResponse</code></summary>
 <dl>
 <dd>
@@ -11308,6 +11377,65 @@ client = Junction(
 )
 
 client.lab_tests.get_lab_test_collection_instruction_pdf(
+    lab_test_id="lab_test_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**lab_test_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">get_promotion_source</a>(...) -> LabTestPromotionSource</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.lab_tests.get_promotion_source(
     lab_test_id="lab_test_id",
 )
 
@@ -16373,6 +16501,14 @@ client.checkout.create_checkout_session(
 <dd>
 
 **idempotency_key:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**appointment:** `typing.Optional[CheckoutSessionAppointment]` 
     
 </dd>
 </dl>

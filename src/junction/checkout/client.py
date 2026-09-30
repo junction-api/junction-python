@@ -6,6 +6,7 @@ from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from ..types.checkout_quote import CheckoutQuote
 from ..types.checkout_session import CheckoutSession
+from ..types.checkout_session_appointment import CheckoutSessionAppointment
 from ..types.checkout_session_payment import CheckoutSessionPayment
 from ..types.lab_test_collection_method import LabTestCollectionMethod
 from ..types.order_set_request import OrderSetRequest
@@ -41,6 +42,7 @@ class CheckoutClient:
         patient_details: PatientDetailsWithValidation,
         patient_address: PatientAddressWithValidation,
         idempotency_key: typing.Optional[str] = None,
+        appointment: typing.Optional[CheckoutSessionAppointment] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> CheckoutSession:
         """
@@ -64,6 +66,8 @@ class CheckoutClient:
         patient_address : PatientAddressWithValidation
 
         idempotency_key : typing.Optional[str]
+
+        appointment : typing.Optional[CheckoutSessionAppointment]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -117,6 +121,7 @@ class CheckoutClient:
             patient_details=patient_details,
             patient_address=patient_address,
             idempotency_key=idempotency_key,
+            appointment=appointment,
             request_options=request_options,
         )
         return _response.data
@@ -333,6 +338,7 @@ class AsyncCheckoutClient:
         patient_details: PatientDetailsWithValidation,
         patient_address: PatientAddressWithValidation,
         idempotency_key: typing.Optional[str] = None,
+        appointment: typing.Optional[CheckoutSessionAppointment] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> CheckoutSession:
         """
@@ -356,6 +362,8 @@ class AsyncCheckoutClient:
         patient_address : PatientAddressWithValidation
 
         idempotency_key : typing.Optional[str]
+
+        appointment : typing.Optional[CheckoutSessionAppointment]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -417,6 +425,7 @@ class AsyncCheckoutClient:
             patient_details=patient_details,
             patient_address=patient_address,
             idempotency_key=idempotency_key,
+            appointment=appointment,
             request_options=request_options,
         )
         return _response.data

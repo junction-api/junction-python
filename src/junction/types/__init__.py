@@ -69,6 +69,7 @@ if typing.TYPE_CHECKING:
     from .checkout_quote_line_item import CheckoutQuoteLineItem
     from .checkout_quote_line_item_code import CheckoutQuoteLineItemCode
     from .checkout_session import CheckoutSession
+    from .checkout_session_appointment import CheckoutSessionAppointment
     from .checkout_session_payment import CheckoutSessionPayment
     from .checkout_session_payment_method import CheckoutSessionPaymentMethod
     from .checkout_session_status import CheckoutSessionStatus
@@ -706,6 +707,8 @@ if typing.TYPE_CHECKING:
     from .lab_test_panel_pricing import LabTestPanelPricing
     from .lab_test_panel_pricing_marker_breakdown_value import LabTestPanelPricingMarkerBreakdownValue
     from .lab_test_panel_pricing_pricing import LabTestPanelPricingPricing
+    from .lab_test_promotion import LabTestPromotion
+    from .lab_test_promotion_source import LabTestPromotionSource
     from .lab_test_resources_response import LabTestResourcesResponse
     from .lab_test_sample_type import LabTestSampleType
     from .lab_test_status import LabTestStatus
@@ -1034,6 +1037,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "CheckoutQuoteLineItem": ".checkout_quote_line_item",
     "CheckoutQuoteLineItemCode": ".checkout_quote_line_item_code",
     "CheckoutSession": ".checkout_session",
+    "CheckoutSessionAppointment": ".checkout_session_appointment",
     "CheckoutSessionPayment": ".checkout_session_payment",
     "CheckoutSessionPaymentMethod": ".checkout_session_payment_method",
     "CheckoutSessionStatus": ".checkout_session_status",
@@ -1601,6 +1605,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "LabTestPanelPricing": ".lab_test_panel_pricing",
     "LabTestPanelPricingMarkerBreakdownValue": ".lab_test_panel_pricing_marker_breakdown_value",
     "LabTestPanelPricingPricing": ".lab_test_panel_pricing_pricing",
+    "LabTestPromotion": ".lab_test_promotion",
+    "LabTestPromotionSource": ".lab_test_promotion_source",
     "LabTestResourcesResponse": ".lab_test_resources_response",
     "LabTestSampleType": ".lab_test_sample_type",
     "LabTestStatus": ".lab_test_status",
@@ -1941,6 +1947,7 @@ __all__ = [
     "CheckoutQuoteLineItem",
     "CheckoutQuoteLineItemCode",
     "CheckoutSession",
+    "CheckoutSessionAppointment",
     "CheckoutSessionPayment",
     "CheckoutSessionPaymentMethod",
     "CheckoutSessionStatus",
@@ -2508,6 +2515,8 @@ __all__ = [
     "LabTestPanelPricing",
     "LabTestPanelPricingMarkerBreakdownValue",
     "LabTestPanelPricingPricing",
+    "LabTestPromotion",
+    "LabTestPromotionSource",
     "LabTestResourcesResponse",
     "LabTestSampleType",
     "LabTestStatus",

@@ -34,6 +34,8 @@ from ..types.lab_results_metadata import LabResultsMetadata
 from ..types.lab_results_raw import LabResultsRaw
 from ..types.lab_test_collection_method import LabTestCollectionMethod
 from ..types.lab_test_generation_method_filter import LabTestGenerationMethodFilter
+from ..types.lab_test_promotion import LabTestPromotion
+from ..types.lab_test_promotion_source import LabTestPromotionSource
 from ..types.lab_test_resources_response import LabTestResourcesResponse
 from ..types.lab_test_status import LabTestStatus
 from ..types.labs import Labs
@@ -192,6 +194,7 @@ class LabTestsClient:
         fasting: typing.Optional[bool] = OMIT,
         lab_account_id: typing.Optional[str] = OMIT,
         lab_slug: typing.Optional[Labs] = OMIT,
+        source_sandbox_lab_test_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ClientFacingLabTest:
         """
@@ -214,6 +217,8 @@ class LabTestsClient:
 
         lab_slug : typing.Optional[Labs]
             ℹ️ This enum is non-exhaustive.
+
+        source_sandbox_lab_test_id : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -245,6 +250,7 @@ class LabTestsClient:
             fasting=fasting,
             lab_account_id=lab_account_id,
             lab_slug=lab_slug,
+            source_sandbox_lab_test_id=source_sandbox_lab_test_id,
             request_options=request_options,
         )
         return _response.data
@@ -584,6 +590,41 @@ class LabTestsClient:
         _response = self._raw_client.get_labs(request_options=request_options)
         return _response.data
 
+    def list_promotions(
+        self,
+        *,
+        source_sandbox_lab_test_ids: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[LabTestPromotion]:
+        """
+        Parameters
+        ----------
+        source_sandbox_lab_test_ids : typing.Optional[typing.Union[str, typing.Sequence[str]]]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[LabTestPromotion]
+            Successful Response
+
+        Examples
+        --------
+        from junction import Junction
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.lab_tests.list_promotions(
+            source_sandbox_lab_test_ids=["source_sandbox_lab_test_ids"],
+        )
+        """
+        _response = self._raw_client.list_promotions(
+            source_sandbox_lab_test_ids=source_sandbox_lab_test_ids, request_options=request_options
+        )
+        return _response.data
+
     def estimate_order_set_pricing(
         self,
         *,
@@ -783,6 +824,36 @@ class LabTestsClient:
             lab_test_id, request_options=request_options
         ) as r:
             yield from r.data
+
+    def get_promotion_source(
+        self, lab_test_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> LabTestPromotionSource:
+        """
+        Parameters
+        ----------
+        lab_test_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        LabTestPromotionSource
+            Successful Response
+
+        Examples
+        --------
+        from junction import Junction
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.lab_tests.get_promotion_source(
+            lab_test_id="lab_test_id",
+        )
+        """
+        _response = self._raw_client.get_promotion_source(lab_test_id, request_options=request_options)
+        return _response.data
 
     def get_orders(
         self,
@@ -2959,6 +3030,7 @@ class AsyncLabTestsClient:
         fasting: typing.Optional[bool] = OMIT,
         lab_account_id: typing.Optional[str] = OMIT,
         lab_slug: typing.Optional[Labs] = OMIT,
+        source_sandbox_lab_test_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ClientFacingLabTest:
         """
@@ -2981,6 +3053,8 @@ class AsyncLabTestsClient:
 
         lab_slug : typing.Optional[Labs]
             ℹ️ This enum is non-exhaustive.
+
+        source_sandbox_lab_test_id : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -3020,6 +3094,7 @@ class AsyncLabTestsClient:
             fasting=fasting,
             lab_account_id=lab_account_id,
             lab_slug=lab_slug,
+            source_sandbox_lab_test_id=source_sandbox_lab_test_id,
             request_options=request_options,
         )
         return _response.data
@@ -3417,6 +3492,49 @@ class AsyncLabTestsClient:
         _response = await self._raw_client.get_labs(request_options=request_options)
         return _response.data
 
+    async def list_promotions(
+        self,
+        *,
+        source_sandbox_lab_test_ids: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[LabTestPromotion]:
+        """
+        Parameters
+        ----------
+        source_sandbox_lab_test_ids : typing.Optional[typing.Union[str, typing.Sequence[str]]]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[LabTestPromotion]
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import AsyncJunction
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.lab_tests.list_promotions(
+                source_sandbox_lab_test_ids=["source_sandbox_lab_test_ids"],
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list_promotions(
+            source_sandbox_lab_test_ids=source_sandbox_lab_test_ids, request_options=request_options
+        )
+        return _response.data
+
     async def estimate_order_set_pricing(
         self,
         *,
@@ -3641,6 +3759,44 @@ class AsyncLabTestsClient:
         ) as r:
             async for _chunk in r.data:
                 yield _chunk
+
+    async def get_promotion_source(
+        self, lab_test_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> LabTestPromotionSource:
+        """
+        Parameters
+        ----------
+        lab_test_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        LabTestPromotionSource
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import AsyncJunction
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.lab_tests.get_promotion_source(
+                lab_test_id="lab_test_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get_promotion_source(lab_test_id, request_options=request_options)
+        return _response.data
 
     async def get_orders(
         self,

@@ -1,3 +1,11 @@
+## [2.1.0] - 2026-09-30
+### Added
+- **`LabTestPromotion`** and **`LabTestPromotionSource`** — new models representing a sandbox-to-production lab-test promotion record and its source details.
+- **`CheckoutSessionAppointment`** — new model for attaching a held PSC slot to a checkout session so the appointment is created automatically when payment completes.
+- **`LabTestsClient.list_promotions()`** — sync and async methods to list lab-test promotions, optionally filtered by `source_sandbox_lab_test_ids`.
+- **`LabTestsClient.get_promotion_source()`** — sync and async methods to retrieve the sandbox source details for a promoted lab test by `lab_test_id`.
+- **`CheckoutClient.create_session()`** now accepts an optional `appointment` parameter (`CheckoutSessionAppointment`) to pre-attach a PSC slot to the session.
+
 ## 2.0.0 - 2026-09-24
 
 ### Added

@@ -45,6 +45,8 @@ from ..types.lab_results_metadata import LabResultsMetadata
 from ..types.lab_results_raw import LabResultsRaw
 from ..types.lab_test_collection_method import LabTestCollectionMethod
 from ..types.lab_test_generation_method_filter import LabTestGenerationMethodFilter
+from ..types.lab_test_promotion import LabTestPromotion
+from ..types.lab_test_promotion_source import LabTestPromotionSource
 from ..types.lab_test_resources_response import LabTestResourcesResponse
 from ..types.lab_test_status import LabTestStatus
 from ..types.labs import Labs
@@ -197,6 +199,7 @@ class RawLabTestsClient:
         fasting: typing.Optional[bool] = OMIT,
         lab_account_id: typing.Optional[str] = OMIT,
         lab_slug: typing.Optional[Labs] = OMIT,
+        source_sandbox_lab_test_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ClientFacingLabTest]:
         """
@@ -220,6 +223,8 @@ class RawLabTestsClient:
         lab_slug : typing.Optional[Labs]
             ℹ️ This enum is non-exhaustive.
 
+        source_sandbox_lab_test_id : typing.Optional[str]
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -240,6 +245,7 @@ class RawLabTestsClient:
                 "fasting": fasting,
                 "lab_account_id": lab_account_id,
                 "lab_slug": lab_slug,
+                "source_sandbox_lab_test_id": source_sandbox_lab_test_id,
             },
             headers={
                 "content-type": "application/json",
@@ -755,6 +761,63 @@ class RawLabTestsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def list_promotions(
+        self,
+        *,
+        source_sandbox_lab_test_ids: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[typing.List[LabTestPromotion]]:
+        """
+        Parameters
+        ----------
+        source_sandbox_lab_test_ids : typing.Optional[typing.Union[str, typing.Sequence[str]]]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[typing.List[LabTestPromotion]]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v3/lab_test_promotion",
+            method="GET",
+            params={
+                "source_sandbox_lab_test_ids": source_sandbox_lab_test_ids,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    typing.List[LabTestPromotion],
+                    parse_obj_as(
+                        type_=typing.List[LabTestPromotion],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     def estimate_order_set_pricing(
         self,
         *,
@@ -1003,6 +1066,57 @@ class RawLabTestsClient:
                 raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
             yield _stream()
+
+    def get_promotion_source(
+        self, lab_test_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[LabTestPromotionSource]:
+        """
+        Parameters
+        ----------
+        lab_test_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[LabTestPromotionSource]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v3/lab_test/{encode_path_param(lab_test_id)}/promotion_source",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    LabTestPromotionSource,
+                    parse_obj_as(
+                        type_=LabTestPromotionSource,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def get_orders(
         self,
@@ -3973,6 +4087,7 @@ class AsyncRawLabTestsClient:
         fasting: typing.Optional[bool] = OMIT,
         lab_account_id: typing.Optional[str] = OMIT,
         lab_slug: typing.Optional[Labs] = OMIT,
+        source_sandbox_lab_test_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ClientFacingLabTest]:
         """
@@ -3996,6 +4111,8 @@ class AsyncRawLabTestsClient:
         lab_slug : typing.Optional[Labs]
             ℹ️ This enum is non-exhaustive.
 
+        source_sandbox_lab_test_id : typing.Optional[str]
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -4016,6 +4133,7 @@ class AsyncRawLabTestsClient:
                 "fasting": fasting,
                 "lab_account_id": lab_account_id,
                 "lab_slug": lab_slug,
+                "source_sandbox_lab_test_id": source_sandbox_lab_test_id,
             },
             headers={
                 "content-type": "application/json",
@@ -4531,6 +4649,63 @@ class AsyncRawLabTestsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    async def list_promotions(
+        self,
+        *,
+        source_sandbox_lab_test_ids: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[typing.List[LabTestPromotion]]:
+        """
+        Parameters
+        ----------
+        source_sandbox_lab_test_ids : typing.Optional[typing.Union[str, typing.Sequence[str]]]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[typing.List[LabTestPromotion]]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v3/lab_test_promotion",
+            method="GET",
+            params={
+                "source_sandbox_lab_test_ids": source_sandbox_lab_test_ids,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    typing.List[LabTestPromotion],
+                    parse_obj_as(
+                        type_=typing.List[LabTestPromotion],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     async def estimate_order_set_pricing(
         self,
         *,
@@ -4780,6 +4955,57 @@ class AsyncRawLabTestsClient:
                 raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
             yield await _stream()
+
+    async def get_promotion_source(
+        self, lab_test_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[LabTestPromotionSource]:
+        """
+        Parameters
+        ----------
+        lab_test_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[LabTestPromotionSource]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v3/lab_test/{encode_path_param(lab_test_id)}/promotion_source",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    LabTestPromotionSource,
+                    parse_obj_as(
+                        type_=LabTestPromotionSource,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def get_orders(
         self,
