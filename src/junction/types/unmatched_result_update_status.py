@@ -7,22 +7,20 @@ from ..core import enum
 T_Result = typing.TypeVar("T_Result")
 
 
-class MatchReviewStatusFilter(enum.StrEnum):
+class UnmatchedResultUpdateStatus(enum.StrEnum):
     """
-    ℹ️ This enum is non-exhaustive.
+    Subset of `MatchReviewTransitionStatus` a customer may move a result to. ℹ️ This enum is non-exhaustive.
     """
 
     PENDING_CUSTOMER_REVIEW = "pending_customer_review"
     PENDING_CUSTOMER_REVIEW_IN_PROGRESS = "pending_customer_review:in_progress"
-    PENDING_OPS_REVIEW = "pending_ops_review"
-    RESOLVED = "resolved"
-    _UNKNOWN = "__MATCHREVIEWSTATUSFILTER_UNKNOWN__"
+    _UNKNOWN = "__UNMATCHEDRESULTUPDATESTATUS_UNKNOWN__"
     """
     This member is used for forward compatibility. If the value is not recognized by the enum, it will be stored here, and the raw value is accessible through `.value`.
     """
 
     @classmethod
-    def _missing_(cls, value: typing.Any) -> "MatchReviewStatusFilter":
+    def _missing_(cls, value: typing.Any) -> "UnmatchedResultUpdateStatus":
         unknown = cls._UNKNOWN
         unknown._value_ = value
         return unknown
@@ -31,16 +29,10 @@ class MatchReviewStatusFilter(enum.StrEnum):
         self,
         pending_customer_review: typing.Callable[[], T_Result],
         pending_customer_review_in_progress: typing.Callable[[], T_Result],
-        pending_ops_review: typing.Callable[[], T_Result],
-        resolved: typing.Callable[[], T_Result],
         _unknown_member: typing.Callable[[str], T_Result],
     ) -> T_Result:
-        if self is MatchReviewStatusFilter.PENDING_CUSTOMER_REVIEW:
+        if self is UnmatchedResultUpdateStatus.PENDING_CUSTOMER_REVIEW:
             return pending_customer_review()
-        if self is MatchReviewStatusFilter.PENDING_CUSTOMER_REVIEW_IN_PROGRESS:
+        if self is UnmatchedResultUpdateStatus.PENDING_CUSTOMER_REVIEW_IN_PROGRESS:
             return pending_customer_review_in_progress()
-        if self is MatchReviewStatusFilter.PENDING_OPS_REVIEW:
-            return pending_ops_review()
-        if self is MatchReviewStatusFilter.RESOLVED:
-            return resolved()
         return _unknown_member(self._value_)

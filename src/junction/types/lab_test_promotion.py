@@ -4,15 +4,16 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .add_on_order import AddOnOrder
-from .order_set_parameters import OrderSetParameters
+from .lab_test_status import LabTestStatus
 
 
-class OrderSetRequest(UniversalBaseModel):
-    lab_test_ids: typing.Optional[typing.List[str]] = None
-    add_on: typing.Optional[AddOnOrder] = None
-    lab_account_id: typing.Optional[str] = None
-    parameters: typing.Optional[OrderSetParameters] = None
+class LabTestPromotion(UniversalBaseModel):
+    source_sandbox_lab_test_id: str
+    production_lab_test_id: str
+    status: LabTestStatus = pydantic.Field()
+    """
+    ℹ️ This enum is non-exhaustive.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

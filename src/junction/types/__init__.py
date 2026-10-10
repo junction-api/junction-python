@@ -69,6 +69,7 @@ if typing.TYPE_CHECKING:
     from .checkout_quote_line_item import CheckoutQuoteLineItem
     from .checkout_quote_line_item_code import CheckoutQuoteLineItemCode
     from .checkout_session import CheckoutSession
+    from .checkout_session_appointment import CheckoutSessionAppointment
     from .checkout_session_payment import CheckoutSessionPayment
     from .checkout_session_payment_method import CheckoutSessionPaymentMethod
     from .checkout_session_status import CheckoutSessionStatus
@@ -546,6 +547,7 @@ if typing.TYPE_CHECKING:
     from .gender_identity import GenderIdentity
     from .generic_pricing_component import GenericPricingComponent
     from .generic_pricing_component_pricing import GenericPricingComponentPricing
+    from .get_lab_test_collection_instructions_response import GetLabTestCollectionInstructionsResponse
     from .get_lab_test_pricing_response import GetLabTestPricingResponse
     from .get_markers_response import GetMarkersResponse
     from .get_order_communication_settings_response import GetOrderCommunicationSettingsResponse
@@ -706,6 +708,8 @@ if typing.TYPE_CHECKING:
     from .lab_test_panel_pricing import LabTestPanelPricing
     from .lab_test_panel_pricing_marker_breakdown_value import LabTestPanelPricingMarkerBreakdownValue
     from .lab_test_panel_pricing_pricing import LabTestPanelPricingPricing
+    from .lab_test_promotion import LabTestPromotion
+    from .lab_test_promotion_source import LabTestPromotionSource
     from .lab_test_resources_response import LabTestResourcesResponse
     from .lab_test_sample_type import LabTestSampleType
     from .lab_test_status import LabTestStatus
@@ -715,6 +719,7 @@ if typing.TYPE_CHECKING:
     from .link_token_exchange_response import LinkTokenExchangeResponse
     from .list_unmatched_result_response import ListUnmatchedResultResponse
     from .list_unmatched_result_test_cases_response import ListUnmatchedResultTestCasesResponse
+    from .list_unmatched_result_updates_response import ListUnmatchedResultUpdatesResponse
     from .lng_lat import LngLat
     from .loinc_match import LoincMatch
     from .macros import Macros
@@ -734,6 +739,7 @@ if typing.TYPE_CHECKING:
     from .match_review_resolution_action import MatchReviewResolutionAction
     from .match_review_status import MatchReviewStatus
     from .match_review_status_filter import MatchReviewStatusFilter
+    from .match_review_transition_status import MatchReviewTransitionStatus
     from .match_review_webhook_payload import MatchReviewWebhookPayload
     from .match_sub_reason_code import MatchSubReasonCode
     from .mc_basal_body_temperature_field_expr import McBasalBodyTemperatureFieldExpr
@@ -779,6 +785,8 @@ if typing.TYPE_CHECKING:
     from .order_low_level_status import OrderLowLevelStatus
     from .order_marker_tracking_status import OrderMarkerTrackingStatus
     from .order_origin import OrderOrigin
+    from .order_set_fasting_requirement import OrderSetFastingRequirement
+    from .order_set_parameters import OrderSetParameters
     from .order_set_pricing import OrderSetPricing
     from .order_set_pricing_aggregate_pricing import OrderSetPricingAggregatePricing
     from .order_set_pricing_components_item import OrderSetPricingComponentsItem
@@ -930,6 +938,7 @@ if typing.TYPE_CHECKING:
     from .timeseries_resource import TimeseriesResource
     from .trace_elements import TraceElements
     from .unmatched_result import UnmatchedResult
+    from .unmatched_result_latest_activity_actor_type import UnmatchedResultLatestActivityActorType
     from .unmatched_result_resolution_action import UnmatchedResultResolutionAction
     from .unmatched_result_test_case import UnmatchedResultTestCase
     from .unmatched_result_test_case_definition import UnmatchedResultTestCaseDefinition
@@ -938,6 +947,9 @@ if typing.TYPE_CHECKING:
     from .unmatched_result_test_order_source import UnmatchedResultTestOrderSource
     from .unmatched_result_test_run_status import UnmatchedResultTestRunStatus
     from .unmatched_result_test_stage import UnmatchedResultTestStage
+    from .unmatched_result_update import UnmatchedResultUpdate
+    from .unmatched_result_update_actor_type import UnmatchedResultUpdateActorType
+    from .unmatched_result_update_status import UnmatchedResultUpdateStatus
     from .unnest_expr import UnnestExpr
     from .unnest_expr_unnest import UnnestExprUnnest
     from .unrecognized_value_macro_expr import UnrecognizedValueMacroExpr
@@ -1034,6 +1046,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "CheckoutQuoteLineItem": ".checkout_quote_line_item",
     "CheckoutQuoteLineItemCode": ".checkout_quote_line_item_code",
     "CheckoutSession": ".checkout_session",
+    "CheckoutSessionAppointment": ".checkout_session_appointment",
     "CheckoutSessionPayment": ".checkout_session_payment",
     "CheckoutSessionPaymentMethod": ".checkout_session_payment_method",
     "CheckoutSessionStatus": ".checkout_session_status",
@@ -1443,6 +1456,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "GenderIdentity": ".gender_identity",
     "GenericPricingComponent": ".generic_pricing_component",
     "GenericPricingComponentPricing": ".generic_pricing_component_pricing",
+    "GetLabTestCollectionInstructionsResponse": ".get_lab_test_collection_instructions_response",
     "GetLabTestPricingResponse": ".get_lab_test_pricing_response",
     "GetMarkersResponse": ".get_markers_response",
     "GetOrderCommunicationSettingsResponse": ".get_order_communication_settings_response",
@@ -1601,6 +1615,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "LabTestPanelPricing": ".lab_test_panel_pricing",
     "LabTestPanelPricingMarkerBreakdownValue": ".lab_test_panel_pricing_marker_breakdown_value",
     "LabTestPanelPricingPricing": ".lab_test_panel_pricing_pricing",
+    "LabTestPromotion": ".lab_test_promotion",
+    "LabTestPromotionSource": ".lab_test_promotion_source",
     "LabTestResourcesResponse": ".lab_test_resources_response",
     "LabTestSampleType": ".lab_test_sample_type",
     "LabTestStatus": ".lab_test_status",
@@ -1610,6 +1626,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "LinkTokenExchangeResponse": ".link_token_exchange_response",
     "ListUnmatchedResultResponse": ".list_unmatched_result_response",
     "ListUnmatchedResultTestCasesResponse": ".list_unmatched_result_test_cases_response",
+    "ListUnmatchedResultUpdatesResponse": ".list_unmatched_result_updates_response",
     "LngLat": ".lng_lat",
     "LoincMatch": ".loinc_match",
     "Macros": ".macros",
@@ -1629,6 +1646,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "MatchReviewResolutionAction": ".match_review_resolution_action",
     "MatchReviewStatus": ".match_review_status",
     "MatchReviewStatusFilter": ".match_review_status_filter",
+    "MatchReviewTransitionStatus": ".match_review_transition_status",
     "MatchReviewWebhookPayload": ".match_review_webhook_payload",
     "MatchSubReasonCode": ".match_sub_reason_code",
     "McBasalBodyTemperatureFieldExpr": ".mc_basal_body_temperature_field_expr",
@@ -1670,6 +1688,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "OrderLowLevelStatus": ".order_low_level_status",
     "OrderMarkerTrackingStatus": ".order_marker_tracking_status",
     "OrderOrigin": ".order_origin",
+    "OrderSetFastingRequirement": ".order_set_fasting_requirement",
+    "OrderSetParameters": ".order_set_parameters",
     "OrderSetPricing": ".order_set_pricing",
     "OrderSetPricingAggregatePricing": ".order_set_pricing_aggregate_pricing",
     "OrderSetPricingComponentsItem": ".order_set_pricing_components_item",
@@ -1817,6 +1837,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "TimeseriesResource": ".timeseries_resource",
     "TraceElements": ".trace_elements",
     "UnmatchedResult": ".unmatched_result",
+    "UnmatchedResultLatestActivityActorType": ".unmatched_result_latest_activity_actor_type",
     "UnmatchedResultResolutionAction": ".unmatched_result_resolution_action",
     "UnmatchedResultTestCase": ".unmatched_result_test_case",
     "UnmatchedResultTestCaseDefinition": ".unmatched_result_test_case_definition",
@@ -1825,6 +1846,9 @@ _dynamic_imports: typing.Dict[str, str] = {
     "UnmatchedResultTestOrderSource": ".unmatched_result_test_order_source",
     "UnmatchedResultTestRunStatus": ".unmatched_result_test_run_status",
     "UnmatchedResultTestStage": ".unmatched_result_test_stage",
+    "UnmatchedResultUpdate": ".unmatched_result_update",
+    "UnmatchedResultUpdateActorType": ".unmatched_result_update_actor_type",
+    "UnmatchedResultUpdateStatus": ".unmatched_result_update_status",
     "UnnestExpr": ".unnest_expr",
     "UnnestExprUnnest": ".unnest_expr_unnest",
     "UnrecognizedValueMacroExpr": ".unrecognized_value_macro_expr",
@@ -1941,6 +1965,7 @@ __all__ = [
     "CheckoutQuoteLineItem",
     "CheckoutQuoteLineItemCode",
     "CheckoutSession",
+    "CheckoutSessionAppointment",
     "CheckoutSessionPayment",
     "CheckoutSessionPaymentMethod",
     "CheckoutSessionStatus",
@@ -2350,6 +2375,7 @@ __all__ = [
     "GenderIdentity",
     "GenericPricingComponent",
     "GenericPricingComponentPricing",
+    "GetLabTestCollectionInstructionsResponse",
     "GetLabTestPricingResponse",
     "GetMarkersResponse",
     "GetOrderCommunicationSettingsResponse",
@@ -2508,6 +2534,8 @@ __all__ = [
     "LabTestPanelPricing",
     "LabTestPanelPricingMarkerBreakdownValue",
     "LabTestPanelPricingPricing",
+    "LabTestPromotion",
+    "LabTestPromotionSource",
     "LabTestResourcesResponse",
     "LabTestSampleType",
     "LabTestStatus",
@@ -2517,6 +2545,7 @@ __all__ = [
     "LinkTokenExchangeResponse",
     "ListUnmatchedResultResponse",
     "ListUnmatchedResultTestCasesResponse",
+    "ListUnmatchedResultUpdatesResponse",
     "LngLat",
     "LoincMatch",
     "Macros",
@@ -2536,6 +2565,7 @@ __all__ = [
     "MatchReviewResolutionAction",
     "MatchReviewStatus",
     "MatchReviewStatusFilter",
+    "MatchReviewTransitionStatus",
     "MatchReviewWebhookPayload",
     "MatchSubReasonCode",
     "McBasalBodyTemperatureFieldExpr",
@@ -2577,6 +2607,8 @@ __all__ = [
     "OrderLowLevelStatus",
     "OrderMarkerTrackingStatus",
     "OrderOrigin",
+    "OrderSetFastingRequirement",
+    "OrderSetParameters",
     "OrderSetPricing",
     "OrderSetPricingAggregatePricing",
     "OrderSetPricingComponentsItem",
@@ -2724,6 +2756,7 @@ __all__ = [
     "TimeseriesResource",
     "TraceElements",
     "UnmatchedResult",
+    "UnmatchedResultLatestActivityActorType",
     "UnmatchedResultResolutionAction",
     "UnmatchedResultTestCase",
     "UnmatchedResultTestCaseDefinition",
@@ -2732,6 +2765,9 @@ __all__ = [
     "UnmatchedResultTestOrderSource",
     "UnmatchedResultTestRunStatus",
     "UnmatchedResultTestStage",
+    "UnmatchedResultUpdate",
+    "UnmatchedResultUpdateActorType",
+    "UnmatchedResultUpdateStatus",
     "UnnestExpr",
     "UnnestExprUnnest",
     "UnrecognizedValueMacroExpr",

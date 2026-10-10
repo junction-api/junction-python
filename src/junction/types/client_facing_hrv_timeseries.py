@@ -25,7 +25,7 @@ class ClientFacingHrvTimeseries(UniversalBaseModel):
 
     unit: str = pydantic.Field()
     """
-    Measured in rmssd.
+    HRV method: sdnn for Apple HealthKit, rmssd for other providers. Values are measured in milliseconds.
     """
 
     timestamp: dt.datetime = pydantic.Field()
@@ -35,7 +35,7 @@ class ClientFacingHrvTimeseries(UniversalBaseModel):
 
     value: float = pydantic.Field()
     """
-    HRV calculated using rmssd during sleep
+    Heart rate variability in milliseconds.
     """
 
     if IS_PYDANTIC_V2:

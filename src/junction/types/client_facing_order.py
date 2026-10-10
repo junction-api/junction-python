@@ -35,6 +35,7 @@ class ClientFacingOrder(UniversalBaseModel):
     Your team id.
     """
 
+    lab_account_id: typing.Optional[str] = None
     patient_details: typing.Optional[ClientFacingPatientDetailsCompatible] = pydantic.Field(default=None)
     """
     Patient Details
