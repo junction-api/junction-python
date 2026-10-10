@@ -11013,6 +11013,67 @@ client.lab_tests.get_labs()
 </dl>
 </details>
 
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">list_promotions</a>(...) -> typing.List[LabTestPromotion]</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.lab_tests.list_promotions(
+    source_sandbox_lab_test_ids=[
+        "source_sandbox_lab_test_ids"
+    ],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**source_sandbox_lab_test_ids:** `typing.Optional[typing.Union[str, typing.Sequence[str]]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">estimate_order_set_pricing</a>(...) -> EstimateOrderSetPricingResponse</code></summary>
 <dl>
 <dd>
@@ -11286,6 +11347,83 @@ client.lab_tests.get_paginated(
 </dl>
 </details>
 
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">get_lab_test_collection_instructions</a>(...) -> GetLabTestCollectionInstructionsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get the tube count for an at-home phlebotomy lab test.
+
+Requires enable_approxdraw_labcorp for Labcorp and enable_approxdraw for
+other labs. Labcorp reuses a saved count or refreshes it with an eligible
+account. Other labs may also generate and store a collection-instructions PDF.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.lab_tests.get_lab_test_collection_instructions(
+    lab_test_id="lab_test_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**lab_test_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">get_lab_test_collection_instruction_pdf</a>(...) -> typing.Iterator[bytes]</code></summary>
 <dl>
 <dd>
@@ -11308,6 +11446,65 @@ client = Junction(
 )
 
 client.lab_tests.get_lab_test_collection_instruction_pdf(
+    lab_test_id="lab_test_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**lab_test_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">get_promotion_source</a>(...) -> LabTestPromotionSource</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.lab_tests.get_promotion_source(
     lab_test_id="lab_test_id",
 )
 
@@ -14603,7 +14800,7 @@ client.lab_tests.list_unmatched_results(
 <dl>
 <dd>
 
-**status:** `typing.Optional[MatchReviewStatusFilter]` — Filter by review status. `pending_customer_review` returns items awaiting your action; `pending_ops_review` returns items you have escalated for review.
+**status:** `typing.Optional[MatchReviewStatusFilter]` — Filter by review status. `pending_customer_review` returns items awaiting your action; `pending_customer_review:in_progress` returns items your team is working on; `pending_ops_review` returns items you have escalated for review.
     
 </dd>
 </dl>
@@ -14647,7 +14844,7 @@ client.lab_tests.list_unmatched_results(
 </dl>
 </details>
 
-<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">get_unmatched_result</a>(...) -> GetUnmatchedResultResponse</code></summary>
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">get_unmatched_result</a>(...) -> UnmatchedResult</code></summary>
 <dl>
 <dd>
 
@@ -14846,6 +15043,158 @@ client.lab_tests.resolve_unmatched_result(
 <dd>
 
 **note:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">list_unmatched_result_updates</a>(...) -> ListUnmatchedResultUpdatesResponse</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.lab_tests.list_unmatched_result_updates(
+    raw_result_id="raw_result_id",
+    limit=1,
+    next_cursor="next_cursor",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**raw_result_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**next_cursor:** `typing.Optional[str]` — The cursor for fetching the next page, or `null` to fetch the first page.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.lab_tests.<a href="src/junction/lab_tests/client.py">create_unmatched_result_update</a>(...) -> UnmatchedResult</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from junction import Junction
+from junction.environment import JunctionEnvironment
+
+client = Junction(
+    api_key="<value>",
+    environment=JunctionEnvironment.PRODUCTION,
+)
+
+client.lab_tests.create_unmatched_result_update(
+    raw_result_id="raw_result_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**raw_result_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**note:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `typing.Optional[UnmatchedResultUpdateStatus]` — ℹ️ This enum is non-exhaustive.
     
 </dd>
 </dl>
@@ -16373,6 +16722,14 @@ client.checkout.create_checkout_session(
 <dd>
 
 **idempotency_key:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**appointment:** `typing.Optional[CheckoutSessionAppointment]` 
     
 </dd>
 </dl>

@@ -1,3 +1,21 @@
+## [3.0.0] - 2026-10-10
+### Breaking Changes
+- **`get_unmatched_result()`** — return type changed from `GetUnmatchedResultResponse` to `UnmatchedResult` (sync and async); update type annotations and remove any wrapper-field access.
+- **`MatchReviewStatusFilter.visit()`** — now requires a `pending_customer_review_in_progress` handler; add `pending_customer_review_in_progress=lambda: ...` to every existing `visit()` call to avoid a `TypeError`.
+
+### Added
+- **`list_promotions()` and `get_promotion_source()`** — new sync and async methods on `LabTestsClient` for listing promotions and retrieving a lab test's promotion source.
+- **`get_lab_test_collection_instructions()`** — new sync and async method returning tube count and collection instructions for at-home phlebotomy lab tests.
+- **`list_unmatched_result_updates()` and `create_unmatched_result_update()`** — new sync and async methods for paginating and posting status/note updates on unmatched results.
+- **Unmatched result activity fields** — `UnmatchedResult` gains `latest_activity_actor_id`, `latest_activity_actor_type`, and `latest_activity_at`; new supporting types `UnmatchedResultUpdate`, `UnmatchedResultUpdateActorType`, `UnmatchedResultUpdateStatus`, `UnmatchedResultLatestActivityActorType`, and `ListUnmatchedResultUpdatesResponse` added.
+- **New lab-test and order-set types** — added `LabTestPromotion`, `LabTestPromotionSource`, `GetLabTestCollectionInstructionsResponse`, `MatchReviewTransitionStatus`, `OrderSetFastingRequirement`, and `OrderSetParameters`; `OrderSetRequest` and `estimate_order_set_pricing()` gain an optional `parameters` field.
+- **`CheckoutSessionAppointment`** — new model for holding a PSC slot during checkout; passed via the new optional `appointment` parameter on `CheckoutClient.create_session()`.
+- **Sleep stage breakdown** — `ClientFacingSleep` gains optional `stage_asleep_second`, `stage_awake_second`, `stage_light_second`, `stage_rem_second`, and `stage_deep_second` fields.
+- **`ClientFacingOrder.lab_account_id`** — new optional field exposing the lab account associated with an order.
+
+### Changed
+- **`list_unmatched_results()` `status` filter** — documentation updated to reflect the new `pending_customer_review:in_progress` filter value.
+
 ## 2.0.0 - 2026-09-24
 
 ### Added

@@ -23,9 +23,9 @@ from ..types.client_facing_order import ClientFacingOrder
 from ..types.consent import Consent
 from ..types.create_unmatched_result_test_response import CreateUnmatchedResultTestResponse
 from ..types.estimate_order_set_pricing_response import EstimateOrderSetPricingResponse
+from ..types.get_lab_test_collection_instructions_response import GetLabTestCollectionInstructionsResponse
 from ..types.get_markers_response import GetMarkersResponse
 from ..types.get_orders_response import GetOrdersResponse
-from ..types.get_unmatched_result_response import GetUnmatchedResultResponse
 from ..types.get_unmatched_result_test_response import GetUnmatchedResultTestResponse
 from ..types.health_insurance_create_request import HealthInsuranceCreateRequest
 from ..types.interpretation import Interpretation
@@ -34,15 +34,19 @@ from ..types.lab_results_metadata import LabResultsMetadata
 from ..types.lab_results_raw import LabResultsRaw
 from ..types.lab_test_collection_method import LabTestCollectionMethod
 from ..types.lab_test_generation_method_filter import LabTestGenerationMethodFilter
+from ..types.lab_test_promotion import LabTestPromotion
+from ..types.lab_test_promotion_source import LabTestPromotionSource
 from ..types.lab_test_resources_response import LabTestResourcesResponse
 from ..types.lab_test_status import LabTestStatus
 from ..types.labs import Labs
 from ..types.list_unmatched_result_response import ListUnmatchedResultResponse
 from ..types.list_unmatched_result_test_cases_response import ListUnmatchedResultTestCasesResponse
+from ..types.list_unmatched_result_updates_response import ListUnmatchedResultUpdatesResponse
 from ..types.match_decision_code import MatchDecisionCode
 from ..types.match_review_status_filter import MatchReviewStatusFilter
 from ..types.order_activation_type import OrderActivationType
 from ..types.order_low_level_status import OrderLowLevelStatus
+from ..types.order_set_parameters import OrderSetParameters
 from ..types.order_set_request import OrderSetRequest
 from ..types.order_status import OrderStatus
 from ..types.order_tracking import OrderTracking
@@ -58,6 +62,7 @@ from ..types.unmatched_result import UnmatchedResult
 from ..types.unmatched_result_resolution_action import UnmatchedResultResolutionAction
 from ..types.unmatched_result_test_case import UnmatchedResultTestCase
 from ..types.unmatched_result_test_order_source import UnmatchedResultTestOrderSource
+from ..types.unmatched_result_update_status import UnmatchedResultUpdateStatus
 from ..types.us_address import UsAddress
 from ..types.validate_icd_codes_response import ValidateIcdCodesResponse
 from .raw_client import AsyncRawLabTestsClient, RawLabTestsClient
@@ -417,6 +422,7 @@ class LabTestsClient:
         lab_test_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         add_on: typing.Optional[AddOnOrder] = OMIT,
         lab_account_id: typing.Optional[str] = OMIT,
+        parameters: typing.Optional[OrderSetParameters] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> GetMarkersResponse:
         """
@@ -431,6 +437,8 @@ class LabTestsClient:
         add_on : typing.Optional[AddOnOrder]
 
         lab_account_id : typing.Optional[str]
+
+        parameters : typing.Optional[OrderSetParameters]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -458,6 +466,7 @@ class LabTestsClient:
             lab_test_ids=lab_test_ids,
             add_on=add_on,
             lab_account_id=lab_account_id,
+            parameters=parameters,
             request_options=request_options,
         )
         return _response.data
@@ -582,6 +591,41 @@ class LabTestsClient:
         client.lab_tests.get_labs()
         """
         _response = self._raw_client.get_labs(request_options=request_options)
+        return _response.data
+
+    def list_promotions(
+        self,
+        *,
+        source_sandbox_lab_test_ids: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[LabTestPromotion]:
+        """
+        Parameters
+        ----------
+        source_sandbox_lab_test_ids : typing.Optional[typing.Union[str, typing.Sequence[str]]]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[LabTestPromotion]
+            Successful Response
+
+        Examples
+        --------
+        from junction import Junction
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.lab_tests.list_promotions(
+            source_sandbox_lab_test_ids=["source_sandbox_lab_test_ids"],
+        )
+        """
+        _response = self._raw_client.list_promotions(
+            source_sandbox_lab_test_ids=source_sandbox_lab_test_ids, request_options=request_options
+        )
         return _response.data
 
     def estimate_order_set_pricing(
@@ -752,6 +796,42 @@ class LabTestsClient:
         )
         return _response.data
 
+    def get_lab_test_collection_instructions(
+        self, lab_test_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> GetLabTestCollectionInstructionsResponse:
+        """
+        Get the tube count for an at-home phlebotomy lab test.
+
+        Requires enable_approxdraw_labcorp for Labcorp and enable_approxdraw for
+        other labs. Labcorp reuses a saved count or refreshes it with an eligible
+        account. Other labs may also generate and store a collection-instructions PDF.
+
+        Parameters
+        ----------
+        lab_test_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        GetLabTestCollectionInstructionsResponse
+            Successful Response
+
+        Examples
+        --------
+        from junction import Junction
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.lab_tests.get_lab_test_collection_instructions(
+            lab_test_id="lab_test_id",
+        )
+        """
+        _response = self._raw_client.get_lab_test_collection_instructions(lab_test_id, request_options=request_options)
+        return _response.data
+
     def get_lab_test_collection_instruction_pdf(
         self, lab_test_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.Iterator[bytes]:
@@ -783,6 +863,36 @@ class LabTestsClient:
             lab_test_id, request_options=request_options
         ) as r:
             yield from r.data
+
+    def get_promotion_source(
+        self, lab_test_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> LabTestPromotionSource:
+        """
+        Parameters
+        ----------
+        lab_test_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        LabTestPromotionSource
+            Successful Response
+
+        Examples
+        --------
+        from junction import Junction
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.lab_tests.get_promotion_source(
+            lab_test_id="lab_test_id",
+        )
+        """
+        _response = self._raw_client.get_promotion_source(lab_test_id, request_options=request_options)
+        return _response.data
 
     def get_orders(
         self,
@@ -2633,7 +2743,7 @@ class LabTestsClient:
             Filter by lab slug (e.g. `labcorp`, `quest`).
 
         status : typing.Optional[MatchReviewStatusFilter]
-            Filter by review status. `pending_customer_review` returns items awaiting your action; `pending_ops_review` returns items you have escalated for review.
+            Filter by review status. `pending_customer_review` returns items awaiting your action; `pending_customer_review:in_progress` returns items your team is working on; `pending_ops_review` returns items you have escalated for review.
 
         created_at_start : typing.Optional[str]
             Filter by result receipt date on or after this date (UTC, inclusive, YYYY-MM-DD).
@@ -2685,7 +2795,7 @@ class LabTestsClient:
 
     def get_unmatched_result(
         self, raw_result_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> GetUnmatchedResultResponse:
+    ) -> UnmatchedResult:
         """
         Parameters
         ----------
@@ -2696,7 +2806,7 @@ class LabTestsClient:
 
         Returns
         -------
-        GetUnmatchedResultResponse
+        UnmatchedResult
             Successful Response
 
         Examples
@@ -2797,6 +2907,92 @@ class LabTestsClient:
         """
         _response = self._raw_client.resolve_unmatched_result(
             raw_result_id, action=action, note=note, request_options=request_options
+        )
+        return _response.data
+
+    def list_unmatched_result_updates(
+        self,
+        raw_result_id: str,
+        *,
+        limit: typing.Optional[int] = None,
+        next_cursor: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ListUnmatchedResultUpdatesResponse:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        limit : typing.Optional[int]
+
+        next_cursor : typing.Optional[str]
+            The cursor for fetching the next page, or `null` to fetch the first page.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ListUnmatchedResultUpdatesResponse
+            Successful Response
+
+        Examples
+        --------
+        from junction import Junction
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.lab_tests.list_unmatched_result_updates(
+            raw_result_id="raw_result_id",
+            limit=1,
+            next_cursor="next_cursor",
+        )
+        """
+        _response = self._raw_client.list_unmatched_result_updates(
+            raw_result_id, limit=limit, next_cursor=next_cursor, request_options=request_options
+        )
+        return _response.data
+
+    def create_unmatched_result_update(
+        self,
+        raw_result_id: str,
+        *,
+        note: typing.Optional[str] = OMIT,
+        status: typing.Optional[UnmatchedResultUpdateStatus] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> UnmatchedResult:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        note : typing.Optional[str]
+
+        status : typing.Optional[UnmatchedResultUpdateStatus]
+            ℹ️ This enum is non-exhaustive.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        UnmatchedResult
+            Successful Response
+
+        Examples
+        --------
+        from junction import Junction
+
+        client = Junction(
+            api_key="YOUR_API_KEY",
+        )
+        client.lab_tests.create_unmatched_result_update(
+            raw_result_id="raw_result_id",
+        )
+        """
+        _response = self._raw_client.create_unmatched_result_update(
+            raw_result_id, note=note, status=status, request_options=request_options
         )
         return _response.data
 
@@ -3216,6 +3412,7 @@ class AsyncLabTestsClient:
         lab_test_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         add_on: typing.Optional[AddOnOrder] = OMIT,
         lab_account_id: typing.Optional[str] = OMIT,
+        parameters: typing.Optional[OrderSetParameters] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> GetMarkersResponse:
         """
@@ -3230,6 +3427,8 @@ class AsyncLabTestsClient:
         add_on : typing.Optional[AddOnOrder]
 
         lab_account_id : typing.Optional[str]
+
+        parameters : typing.Optional[OrderSetParameters]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -3265,6 +3464,7 @@ class AsyncLabTestsClient:
             lab_test_ids=lab_test_ids,
             add_on=add_on,
             lab_account_id=lab_account_id,
+            parameters=parameters,
             request_options=request_options,
         )
         return _response.data
@@ -3415,6 +3615,49 @@ class AsyncLabTestsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get_labs(request_options=request_options)
+        return _response.data
+
+    async def list_promotions(
+        self,
+        *,
+        source_sandbox_lab_test_ids: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[LabTestPromotion]:
+        """
+        Parameters
+        ----------
+        source_sandbox_lab_test_ids : typing.Optional[typing.Union[str, typing.Sequence[str]]]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[LabTestPromotion]
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import AsyncJunction
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.lab_tests.list_promotions(
+                source_sandbox_lab_test_ids=["source_sandbox_lab_test_ids"],
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list_promotions(
+            source_sandbox_lab_test_ids=source_sandbox_lab_test_ids, request_options=request_options
+        )
         return _response.data
 
     async def estimate_order_set_pricing(
@@ -3601,6 +3844,52 @@ class AsyncLabTestsClient:
         )
         return _response.data
 
+    async def get_lab_test_collection_instructions(
+        self, lab_test_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> GetLabTestCollectionInstructionsResponse:
+        """
+        Get the tube count for an at-home phlebotomy lab test.
+
+        Requires enable_approxdraw_labcorp for Labcorp and enable_approxdraw for
+        other labs. Labcorp reuses a saved count or refreshes it with an eligible
+        account. Other labs may also generate and store a collection-instructions PDF.
+
+        Parameters
+        ----------
+        lab_test_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        GetLabTestCollectionInstructionsResponse
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import AsyncJunction
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.lab_tests.get_lab_test_collection_instructions(
+                lab_test_id="lab_test_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get_lab_test_collection_instructions(
+            lab_test_id, request_options=request_options
+        )
+        return _response.data
+
     async def get_lab_test_collection_instruction_pdf(
         self, lab_test_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.AsyncIterator[bytes]:
@@ -3641,6 +3930,44 @@ class AsyncLabTestsClient:
         ) as r:
             async for _chunk in r.data:
                 yield _chunk
+
+    async def get_promotion_source(
+        self, lab_test_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> LabTestPromotionSource:
+        """
+        Parameters
+        ----------
+        lab_test_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        LabTestPromotionSource
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import AsyncJunction
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.lab_tests.get_promotion_source(
+                lab_test_id="lab_test_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get_promotion_source(lab_test_id, request_options=request_options)
+        return _response.data
 
     async def get_orders(
         self,
@@ -5782,7 +6109,7 @@ class AsyncLabTestsClient:
             Filter by lab slug (e.g. `labcorp`, `quest`).
 
         status : typing.Optional[MatchReviewStatusFilter]
-            Filter by review status. `pending_customer_review` returns items awaiting your action; `pending_ops_review` returns items you have escalated for review.
+            Filter by review status. `pending_customer_review` returns items awaiting your action; `pending_customer_review:in_progress` returns items your team is working on; `pending_ops_review` returns items you have escalated for review.
 
         created_at_start : typing.Optional[str]
             Filter by result receipt date on or after this date (UTC, inclusive, YYYY-MM-DD).
@@ -5842,7 +6169,7 @@ class AsyncLabTestsClient:
 
     async def get_unmatched_result(
         self, raw_result_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> GetUnmatchedResultResponse:
+    ) -> UnmatchedResult:
         """
         Parameters
         ----------
@@ -5853,7 +6180,7 @@ class AsyncLabTestsClient:
 
         Returns
         -------
-        GetUnmatchedResultResponse
+        UnmatchedResult
             Successful Response
 
         Examples
@@ -5978,6 +6305,108 @@ class AsyncLabTestsClient:
         """
         _response = await self._raw_client.resolve_unmatched_result(
             raw_result_id, action=action, note=note, request_options=request_options
+        )
+        return _response.data
+
+    async def list_unmatched_result_updates(
+        self,
+        raw_result_id: str,
+        *,
+        limit: typing.Optional[int] = None,
+        next_cursor: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ListUnmatchedResultUpdatesResponse:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        limit : typing.Optional[int]
+
+        next_cursor : typing.Optional[str]
+            The cursor for fetching the next page, or `null` to fetch the first page.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ListUnmatchedResultUpdatesResponse
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import AsyncJunction
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.lab_tests.list_unmatched_result_updates(
+                raw_result_id="raw_result_id",
+                limit=1,
+                next_cursor="next_cursor",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list_unmatched_result_updates(
+            raw_result_id, limit=limit, next_cursor=next_cursor, request_options=request_options
+        )
+        return _response.data
+
+    async def create_unmatched_result_update(
+        self,
+        raw_result_id: str,
+        *,
+        note: typing.Optional[str] = OMIT,
+        status: typing.Optional[UnmatchedResultUpdateStatus] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> UnmatchedResult:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        note : typing.Optional[str]
+
+        status : typing.Optional[UnmatchedResultUpdateStatus]
+            ℹ️ This enum is non-exhaustive.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        UnmatchedResult
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from junction import AsyncJunction
+
+        client = AsyncJunction(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.lab_tests.create_unmatched_result_update(
+                raw_result_id="raw_result_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.create_unmatched_result_update(
+            raw_result_id, note=note, status=status, request_options=request_options
         )
         return _response.data
 

@@ -15,6 +15,7 @@ from .match_review_resolution_action import MatchReviewResolutionAction
 from .match_review_status import MatchReviewStatus
 from .match_sub_reason_code import MatchSubReasonCode
 from .result_status import ResultStatus
+from .unmatched_result_latest_activity_actor_type import UnmatchedResultLatestActivityActorType
 
 
 class UnmatchedResult(UniversalBaseModel):
@@ -45,7 +46,6 @@ class UnmatchedResult(UniversalBaseModel):
     """
 
     note: typing.Optional[str] = None
-    is_stale: typing.Optional[bool] = None
     resolution_action: typing.Optional[MatchReviewResolutionAction] = pydantic.Field(default=None)
     """
     ℹ️ This enum is non-exhaustive.
@@ -58,6 +58,13 @@ class UnmatchedResult(UniversalBaseModel):
     created_at: dt.datetime
     updated_at: dt.datetime
     reviewed_at: typing.Optional[dt.datetime] = None
+    latest_activity_actor_id: typing.Optional[str] = None
+    latest_activity_actor_type: typing.Optional[UnmatchedResultLatestActivityActorType] = pydantic.Field(default=None)
+    """
+    ℹ️ This enum is non-exhaustive.
+    """
+
+    latest_activity_at: typing.Optional[dt.datetime] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

@@ -4,15 +4,12 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .add_on_order import AddOnOrder
-from .order_set_parameters import OrderSetParameters
+from .client_facing_lab import ClientFacingLab
 
 
-class OrderSetRequest(UniversalBaseModel):
-    lab_test_ids: typing.Optional[typing.List[str]] = None
-    add_on: typing.Optional[AddOnOrder] = None
-    lab_account_id: typing.Optional[str] = None
-    parameters: typing.Optional[OrderSetParameters] = None
+class GetLabTestCollectionInstructionsResponse(UniversalBaseModel):
+    total_tubes: int
+    lab: ClientFacingLab
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
