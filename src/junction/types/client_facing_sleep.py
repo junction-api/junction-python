@@ -83,6 +83,11 @@ class ClientFacingSleep(UniversalBaseModel):
     Total amount of deep (N3) sleep registered during the sleep period::seconds
     """
 
+    stage_asleep_second: typing.Optional[int] = None
+    stage_awake_second: typing.Optional[int] = None
+    stage_light_second: typing.Optional[int] = None
+    stage_rem_second: typing.Optional[int] = None
+    stage_deep_second: typing.Optional[int] = None
     score: typing.Optional[int] = pydantic.Field(default=None)
     """
     A value between 1 and 100 representing how well the user slept. Currently only available for Withings, Oura, Whoop and Garmin::scalar

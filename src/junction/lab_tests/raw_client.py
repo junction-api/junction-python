@@ -33,9 +33,10 @@ from ..types.client_facing_order import ClientFacingOrder
 from ..types.consent import Consent
 from ..types.create_unmatched_result_test_response import CreateUnmatchedResultTestResponse
 from ..types.estimate_order_set_pricing_response import EstimateOrderSetPricingResponse
+from ..types.get_lab_test_collection_instructions_response import GetLabTestCollectionInstructionsResponse
+from ..types.get_lab_test_version_history_response import GetLabTestVersionHistoryResponse
 from ..types.get_markers_response import GetMarkersResponse
 from ..types.get_orders_response import GetOrdersResponse
-from ..types.get_unmatched_result_response import GetUnmatchedResultResponse
 from ..types.get_unmatched_result_test_response import GetUnmatchedResultTestResponse
 from ..types.health_insurance_create_request import HealthInsuranceCreateRequest
 from ..types.http_validation_error import HttpValidationError
@@ -45,16 +46,20 @@ from ..types.lab_results_metadata import LabResultsMetadata
 from ..types.lab_results_raw import LabResultsRaw
 from ..types.lab_test_collection_method import LabTestCollectionMethod
 from ..types.lab_test_generation_method_filter import LabTestGenerationMethodFilter
+from ..types.lab_test_promotion import LabTestPromotion
+from ..types.lab_test_promotion_source import LabTestPromotionSource
 from ..types.lab_test_resources_response import LabTestResourcesResponse
 from ..types.lab_test_status import LabTestStatus
 from ..types.labs import Labs
 from ..types.list_unmatched_result_response import ListUnmatchedResultResponse
 from ..types.list_unmatched_result_test_cases_response import ListUnmatchedResultTestCasesResponse
+from ..types.list_unmatched_result_updates_response import ListUnmatchedResultUpdatesResponse
 from ..types.match_decision_code import MatchDecisionCode
 from ..types.match_review_status_filter import MatchReviewStatusFilter
 from ..types.not_found_error_body import NotFoundErrorBody
 from ..types.order_activation_type import OrderActivationType
 from ..types.order_low_level_status import OrderLowLevelStatus
+from ..types.order_set_parameters import OrderSetParameters
 from ..types.order_set_request import OrderSetRequest
 from ..types.order_status import OrderStatus
 from ..types.order_tracking import OrderTracking
@@ -70,6 +75,7 @@ from ..types.unmatched_result import UnmatchedResult
 from ..types.unmatched_result_resolution_action import UnmatchedResultResolutionAction
 from ..types.unmatched_result_test_case import UnmatchedResultTestCase
 from ..types.unmatched_result_test_order_source import UnmatchedResultTestOrderSource
+from ..types.unmatched_result_update_status import UnmatchedResultUpdateStatus
 from ..types.us_address import UsAddress
 from ..types.validate_icd_codes_response import ValidateIcdCodesResponse
 from .types.get_lab_tests_request_order_direction import GetLabTestsRequestOrderDirection
@@ -281,6 +287,7 @@ class RawLabTestsClient:
         self,
         lab_test_id: str,
         *,
+        version: typing.Optional[int] = None,
         lab_account_id: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ClientFacingLabTest]:
@@ -290,6 +297,9 @@ class RawLabTestsClient:
         Parameters
         ----------
         lab_test_id : str
+
+        version : typing.Optional[int]
+            Immutable marker-set version. Omit to read the latest version.
 
         lab_account_id : typing.Optional[str]
             The lab account ID. This lab account is used to determine the availability of markers and lab tests.
@@ -306,6 +316,7 @@ class RawLabTestsClient:
             f"v3/lab_tests/{encode_path_param(lab_test_id)}",
             method="GET",
             params={
+                "version": version,
                 "lab_account_id": lab_account_id,
             },
             request_options=request_options,
@@ -346,6 +357,9 @@ class RawLabTestsClient:
         *,
         name: typing.Optional[str] = OMIT,
         active: typing.Optional[bool] = OMIT,
+        lab_account_id: typing.Optional[str] = OMIT,
+        marker_ids: typing.Optional[typing.Sequence[int]] = OMIT,
+        provider_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ClientFacingLabTest]:
         """
@@ -356,6 +370,14 @@ class RawLabTestsClient:
         name : typing.Optional[str]
 
         active : typing.Optional[bool]
+
+        lab_account_id : typing.Optional[str]
+
+        marker_ids : typing.Optional[typing.Sequence[int]]
+            Complete marker membership for the panel. A changed set creates the new default version used by all subsequent orders.
+
+        provider_ids : typing.Optional[typing.Sequence[str]]
+            Complete provider-code membership for the panel. A changed set creates the new default version used by all subsequent orders.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -371,6 +393,9 @@ class RawLabTestsClient:
             json={
                 "name": name,
                 "active": active,
+                "lab_account_id": lab_account_id,
+                "marker_ids": marker_ids,
+                "provider_ids": provider_ids,
             },
             headers={
                 "content-type": "application/json",
@@ -507,6 +532,7 @@ class RawLabTestsClient:
         lab_test_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         add_on: typing.Optional[AddOnOrder] = OMIT,
         lab_account_id: typing.Optional[str] = OMIT,
+        parameters: typing.Optional[OrderSetParameters] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[GetMarkersResponse]:
         """
@@ -521,6 +547,8 @@ class RawLabTestsClient:
         add_on : typing.Optional[AddOnOrder]
 
         lab_account_id : typing.Optional[str]
+
+        parameters : typing.Optional[OrderSetParameters]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -541,6 +569,7 @@ class RawLabTestsClient:
                 "lab_test_ids": lab_test_ids,
                 "add_on": add_on,
                 "lab_account_id": lab_account_id,
+                "parameters": parameters,
             },
             headers={
                 "content-type": "application/json",
@@ -755,6 +784,129 @@ class RawLabTestsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def get_version_history(
+        self,
+        lab_test_id: str,
+        *,
+        next_cursor: typing.Optional[str] = None,
+        size: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[GetLabTestVersionHistoryResponse]:
+        """
+        List immutable marker-set versions under the established lab-tests resource.
+
+        Parameters
+        ----------
+        lab_test_id : str
+
+        next_cursor : typing.Optional[str]
+
+        size : typing.Optional[int]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[GetLabTestVersionHistoryResponse]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v3/lab_tests/{encode_path_param(lab_test_id)}/version",
+            method="GET",
+            params={
+                "next_cursor": next_cursor,
+                "size": size,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    GetLabTestVersionHistoryResponse,
+                    parse_obj_as(
+                        type_=GetLabTestVersionHistoryResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def list_promotions(
+        self,
+        *,
+        source_sandbox_lab_test_ids: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[typing.List[LabTestPromotion]]:
+        """
+        Parameters
+        ----------
+        source_sandbox_lab_test_ids : typing.Optional[typing.Union[str, typing.Sequence[str]]]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[typing.List[LabTestPromotion]]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v3/lab_test_promotion",
+            method="GET",
+            params={
+                "source_sandbox_lab_test_ids": source_sandbox_lab_test_ids,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    typing.List[LabTestPromotion],
+                    parse_obj_as(
+                        type_=typing.List[LabTestPromotion],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     def estimate_order_set_pricing(
         self,
         *,
@@ -946,6 +1098,63 @@ class RawLabTestsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def get_lab_test_collection_instructions(
+        self, lab_test_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[GetLabTestCollectionInstructionsResponse]:
+        """
+        Get the tube count for an at-home phlebotomy lab test.
+
+        Requires enable_approxdraw_labcorp for Labcorp and enable_approxdraw for
+        other labs. Labcorp reuses a saved count or refreshes it with an eligible
+        account. Other labs may also generate and store a collection-instructions PDF.
+
+        Parameters
+        ----------
+        lab_test_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[GetLabTestCollectionInstructionsResponse]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v3/lab_test/{encode_path_param(lab_test_id)}/collection_instructions",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    GetLabTestCollectionInstructionsResponse,
+                    parse_obj_as(
+                        type_=GetLabTestCollectionInstructionsResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     @contextlib.contextmanager
     def get_lab_test_collection_instruction_pdf(
         self, lab_test_id: str, *, request_options: typing.Optional[RequestOptions] = None
@@ -1003,6 +1212,57 @@ class RawLabTestsClient:
                 raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
             yield _stream()
+
+    def get_promotion_source(
+        self, lab_test_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[LabTestPromotionSource]:
+        """
+        Parameters
+        ----------
+        lab_test_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[LabTestPromotionSource]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v3/lab_test/{encode_path_param(lab_test_id)}/promotion_source",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    LabTestPromotionSource,
+                    parse_obj_as(
+                        type_=LabTestPromotionSource,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def get_orders(
         self,
@@ -3545,7 +3805,7 @@ class RawLabTestsClient:
             Filter by lab slug (e.g. `labcorp`, `quest`).
 
         status : typing.Optional[MatchReviewStatusFilter]
-            Filter by review status. `pending_customer_review` returns items awaiting your action; `pending_ops_review` returns items you have escalated for review.
+            Filter by review status. `pending_customer_review` returns items awaiting your action; `pending_customer_review:in_progress` returns items your team is working on; `pending_ops_review` returns items you have escalated for review.
 
         created_at_start : typing.Optional[str]
             Filter by result receipt date on or after this date (UTC, inclusive, YYYY-MM-DD).
@@ -3611,7 +3871,7 @@ class RawLabTestsClient:
 
     def get_unmatched_result(
         self, raw_result_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[GetUnmatchedResultResponse]:
+    ) -> HttpResponse[UnmatchedResult]:
         """
         Parameters
         ----------
@@ -3622,7 +3882,7 @@ class RawLabTestsClient:
 
         Returns
         -------
-        HttpResponse[GetUnmatchedResultResponse]
+        HttpResponse[UnmatchedResult]
             Successful Response
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -3633,9 +3893,9 @@ class RawLabTestsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    GetUnmatchedResultResponse,
+                    UnmatchedResult,
                     parse_obj_as(
-                        type_=GetUnmatchedResultResponse,  # type: ignore
+                        type_=UnmatchedResult,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -3764,6 +4024,140 @@ class RawLabTestsClient:
             json={
                 "action": action,
                 "note": note,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    UnmatchedResult,
+                    parse_obj_as(
+                        type_=UnmatchedResult,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def list_unmatched_result_updates(
+        self,
+        raw_result_id: str,
+        *,
+        limit: typing.Optional[int] = None,
+        next_cursor: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[ListUnmatchedResultUpdatesResponse]:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        limit : typing.Optional[int]
+
+        next_cursor : typing.Optional[str]
+            The cursor for fetching the next page, or `null` to fetch the first page.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[ListUnmatchedResultUpdatesResponse]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v3/unmatched_result/{encode_path_param(raw_result_id)}/update",
+            method="GET",
+            params={
+                "limit": limit,
+                "next_cursor": next_cursor,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ListUnmatchedResultUpdatesResponse,
+                    parse_obj_as(
+                        type_=ListUnmatchedResultUpdatesResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def create_unmatched_result_update(
+        self,
+        raw_result_id: str,
+        *,
+        note: typing.Optional[str] = OMIT,
+        status: typing.Optional[UnmatchedResultUpdateStatus] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[UnmatchedResult]:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        note : typing.Optional[str]
+
+        status : typing.Optional[UnmatchedResultUpdateStatus]
+            ℹ️ This enum is non-exhaustive.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[UnmatchedResult]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v3/unmatched_result/{encode_path_param(raw_result_id)}/update",
+            method="POST",
+            json={
+                "note": note,
+                "status": status,
             },
             headers={
                 "content-type": "application/json",
@@ -4057,6 +4451,7 @@ class AsyncRawLabTestsClient:
         self,
         lab_test_id: str,
         *,
+        version: typing.Optional[int] = None,
         lab_account_id: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ClientFacingLabTest]:
@@ -4066,6 +4461,9 @@ class AsyncRawLabTestsClient:
         Parameters
         ----------
         lab_test_id : str
+
+        version : typing.Optional[int]
+            Immutable marker-set version. Omit to read the latest version.
 
         lab_account_id : typing.Optional[str]
             The lab account ID. This lab account is used to determine the availability of markers and lab tests.
@@ -4082,6 +4480,7 @@ class AsyncRawLabTestsClient:
             f"v3/lab_tests/{encode_path_param(lab_test_id)}",
             method="GET",
             params={
+                "version": version,
                 "lab_account_id": lab_account_id,
             },
             request_options=request_options,
@@ -4122,6 +4521,9 @@ class AsyncRawLabTestsClient:
         *,
         name: typing.Optional[str] = OMIT,
         active: typing.Optional[bool] = OMIT,
+        lab_account_id: typing.Optional[str] = OMIT,
+        marker_ids: typing.Optional[typing.Sequence[int]] = OMIT,
+        provider_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ClientFacingLabTest]:
         """
@@ -4132,6 +4534,14 @@ class AsyncRawLabTestsClient:
         name : typing.Optional[str]
 
         active : typing.Optional[bool]
+
+        lab_account_id : typing.Optional[str]
+
+        marker_ids : typing.Optional[typing.Sequence[int]]
+            Complete marker membership for the panel. A changed set creates the new default version used by all subsequent orders.
+
+        provider_ids : typing.Optional[typing.Sequence[str]]
+            Complete provider-code membership for the panel. A changed set creates the new default version used by all subsequent orders.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -4147,6 +4557,9 @@ class AsyncRawLabTestsClient:
             json={
                 "name": name,
                 "active": active,
+                "lab_account_id": lab_account_id,
+                "marker_ids": marker_ids,
+                "provider_ids": provider_ids,
             },
             headers={
                 "content-type": "application/json",
@@ -4283,6 +4696,7 @@ class AsyncRawLabTestsClient:
         lab_test_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         add_on: typing.Optional[AddOnOrder] = OMIT,
         lab_account_id: typing.Optional[str] = OMIT,
+        parameters: typing.Optional[OrderSetParameters] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[GetMarkersResponse]:
         """
@@ -4297,6 +4711,8 @@ class AsyncRawLabTestsClient:
         add_on : typing.Optional[AddOnOrder]
 
         lab_account_id : typing.Optional[str]
+
+        parameters : typing.Optional[OrderSetParameters]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -4317,6 +4733,7 @@ class AsyncRawLabTestsClient:
                 "lab_test_ids": lab_test_ids,
                 "add_on": add_on,
                 "lab_account_id": lab_account_id,
+                "parameters": parameters,
             },
             headers={
                 "content-type": "application/json",
@@ -4531,6 +4948,129 @@ class AsyncRawLabTestsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    async def get_version_history(
+        self,
+        lab_test_id: str,
+        *,
+        next_cursor: typing.Optional[str] = None,
+        size: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[GetLabTestVersionHistoryResponse]:
+        """
+        List immutable marker-set versions under the established lab-tests resource.
+
+        Parameters
+        ----------
+        lab_test_id : str
+
+        next_cursor : typing.Optional[str]
+
+        size : typing.Optional[int]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[GetLabTestVersionHistoryResponse]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v3/lab_tests/{encode_path_param(lab_test_id)}/version",
+            method="GET",
+            params={
+                "next_cursor": next_cursor,
+                "size": size,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    GetLabTestVersionHistoryResponse,
+                    parse_obj_as(
+                        type_=GetLabTestVersionHistoryResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def list_promotions(
+        self,
+        *,
+        source_sandbox_lab_test_ids: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[typing.List[LabTestPromotion]]:
+        """
+        Parameters
+        ----------
+        source_sandbox_lab_test_ids : typing.Optional[typing.Union[str, typing.Sequence[str]]]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[typing.List[LabTestPromotion]]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v3/lab_test_promotion",
+            method="GET",
+            params={
+                "source_sandbox_lab_test_ids": source_sandbox_lab_test_ids,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    typing.List[LabTestPromotion],
+                    parse_obj_as(
+                        type_=typing.List[LabTestPromotion],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     async def estimate_order_set_pricing(
         self,
         *,
@@ -4722,6 +5262,63 @@ class AsyncRawLabTestsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    async def get_lab_test_collection_instructions(
+        self, lab_test_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[GetLabTestCollectionInstructionsResponse]:
+        """
+        Get the tube count for an at-home phlebotomy lab test.
+
+        Requires enable_approxdraw_labcorp for Labcorp and enable_approxdraw for
+        other labs. Labcorp reuses a saved count or refreshes it with an eligible
+        account. Other labs may also generate and store a collection-instructions PDF.
+
+        Parameters
+        ----------
+        lab_test_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[GetLabTestCollectionInstructionsResponse]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v3/lab_test/{encode_path_param(lab_test_id)}/collection_instructions",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    GetLabTestCollectionInstructionsResponse,
+                    parse_obj_as(
+                        type_=GetLabTestCollectionInstructionsResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     @contextlib.asynccontextmanager
     async def get_lab_test_collection_instruction_pdf(
         self, lab_test_id: str, *, request_options: typing.Optional[RequestOptions] = None
@@ -4780,6 +5377,57 @@ class AsyncRawLabTestsClient:
                 raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
             yield await _stream()
+
+    async def get_promotion_source(
+        self, lab_test_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[LabTestPromotionSource]:
+        """
+        Parameters
+        ----------
+        lab_test_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[LabTestPromotionSource]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v3/lab_test/{encode_path_param(lab_test_id)}/promotion_source",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    LabTestPromotionSource,
+                    parse_obj_as(
+                        type_=LabTestPromotionSource,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def get_orders(
         self,
@@ -7327,7 +7975,7 @@ class AsyncRawLabTestsClient:
             Filter by lab slug (e.g. `labcorp`, `quest`).
 
         status : typing.Optional[MatchReviewStatusFilter]
-            Filter by review status. `pending_customer_review` returns items awaiting your action; `pending_ops_review` returns items you have escalated for review.
+            Filter by review status. `pending_customer_review` returns items awaiting your action; `pending_customer_review:in_progress` returns items your team is working on; `pending_ops_review` returns items you have escalated for review.
 
         created_at_start : typing.Optional[str]
             Filter by result receipt date on or after this date (UTC, inclusive, YYYY-MM-DD).
@@ -7393,7 +8041,7 @@ class AsyncRawLabTestsClient:
 
     async def get_unmatched_result(
         self, raw_result_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[GetUnmatchedResultResponse]:
+    ) -> AsyncHttpResponse[UnmatchedResult]:
         """
         Parameters
         ----------
@@ -7404,7 +8052,7 @@ class AsyncRawLabTestsClient:
 
         Returns
         -------
-        AsyncHttpResponse[GetUnmatchedResultResponse]
+        AsyncHttpResponse[UnmatchedResult]
             Successful Response
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -7415,9 +8063,9 @@ class AsyncRawLabTestsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    GetUnmatchedResultResponse,
+                    UnmatchedResult,
                     parse_obj_as(
-                        type_=GetUnmatchedResultResponse,  # type: ignore
+                        type_=UnmatchedResult,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -7546,6 +8194,140 @@ class AsyncRawLabTestsClient:
             json={
                 "action": action,
                 "note": note,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    UnmatchedResult,
+                    parse_obj_as(
+                        type_=UnmatchedResult,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def list_unmatched_result_updates(
+        self,
+        raw_result_id: str,
+        *,
+        limit: typing.Optional[int] = None,
+        next_cursor: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[ListUnmatchedResultUpdatesResponse]:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        limit : typing.Optional[int]
+
+        next_cursor : typing.Optional[str]
+            The cursor for fetching the next page, or `null` to fetch the first page.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[ListUnmatchedResultUpdatesResponse]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v3/unmatched_result/{encode_path_param(raw_result_id)}/update",
+            method="GET",
+            params={
+                "limit": limit,
+                "next_cursor": next_cursor,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ListUnmatchedResultUpdatesResponse,
+                    parse_obj_as(
+                        type_=ListUnmatchedResultUpdatesResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def create_unmatched_result_update(
+        self,
+        raw_result_id: str,
+        *,
+        note: typing.Optional[str] = OMIT,
+        status: typing.Optional[UnmatchedResultUpdateStatus] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[UnmatchedResult]:
+        """
+        Parameters
+        ----------
+        raw_result_id : str
+
+        note : typing.Optional[str]
+
+        status : typing.Optional[UnmatchedResultUpdateStatus]
+            ℹ️ This enum is non-exhaustive.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[UnmatchedResult]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v3/unmatched_result/{encode_path_param(raw_result_id)}/update",
+            method="POST",
+            json={
+                "note": note,
+                "status": status,
             },
             headers={
                 "content-type": "application/json",
