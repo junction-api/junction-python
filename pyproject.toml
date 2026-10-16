@@ -4,12 +4,12 @@ dynamic = ["version"]
 
 [tool.poetry]
 name = "junction-api-sdk"
-version = "2.0.0"
+version = "0.0.0.dev0"
 description = ""
 readme = "README.md"
 authors = []
 keywords = []
-
+license = "MIT"
 classifiers = [
     "Intended Audience :: Developers",
     "Programming Language :: Python",
@@ -26,7 +26,8 @@ classifiers = [
     "Operating System :: POSIX :: Linux",
     "Operating System :: Microsoft :: Windows",
     "Topic :: Software Development :: Libraries :: Python Modules",
-    "Typing :: Typed"
+    "Typing :: Typed",
+    "License :: OSI Approved :: MIT License"
 ]
 packages = [
     { include = "junction", from = "src"}
