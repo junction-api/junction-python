@@ -1,3 +1,18 @@
+## [3.0.0] - 2026-10-16
+### Breaking Changes
+- **`MatchReviewStatusFilter.visit()`** — now requires a new `pending_customer_review_in_progress` handler parameter; add a handler for this case to all existing `visit()` call sites.
+
+### Added
+- **`get_version_history()`, `list_promotions()`, and `get_promotion_source()`** — new sync/async methods for retrieving lab-test version history and managing sandbox-to-production promotion workflows.
+- **`get_lab_test_collection_instructions()`** — new sync/async methods to retrieve tube counts and collection-instructions data for at-home phlebotomy lab tests.
+- **`list_unmatched_result_updates()` and `create_unmatched_result_update()`** — new sync/async methods for tracking and posting status/note updates on unmatched results.
+- **`CheckoutSessionAppointment`, `OrderSetParameters`, `MatchReviewTransitionStatus`, and related models** — new types supporting checkout appointments, order-set fasting controls, match-review transitions, unmatched-result update history, and lab-test version/promotion workflows.
+- **Extended panel management fields** — `update()` accepts optional `lab_account_id`, `marker_ids`, and `provider_ids`; `get_by_id()` accepts optional `version`; `get_markers_for_order_set()` accepts optional `parameters`; `ClientFacingMarkerComplete` gains optional recursive `components`; `UnmatchedResult` gains optional activity-tracking and accession fields.
+
+### Changed
+- **`get_unmatched_result()`** — now returns `UnmatchedResult` directly instead of the wrapper `GetUnmatchedResultResponse`; update any type annotations or destructuring that referenced `GetUnmatchedResultResponse`.
+- **`list_unmatched_results()` `status` filter** — the `pending_customer_review:in_progress` value is now documented, reflecting items actively being worked on.
+
 ## 2.0.0 - 2026-09-24
 
 ### Added
