@@ -13,6 +13,7 @@ class MatchReviewStatusFilter(enum.StrEnum):
     """
 
     PENDING_CUSTOMER_REVIEW = "pending_customer_review"
+    PENDING_CUSTOMER_REVIEW_IN_PROGRESS = "pending_customer_review:in_progress"
     PENDING_OPS_REVIEW = "pending_ops_review"
     RESOLVED = "resolved"
     _UNKNOWN = "__MATCHREVIEWSTATUSFILTER_UNKNOWN__"
@@ -29,12 +30,15 @@ class MatchReviewStatusFilter(enum.StrEnum):
     def visit(
         self,
         pending_customer_review: typing.Callable[[], T_Result],
+        pending_customer_review_in_progress: typing.Callable[[], T_Result],
         pending_ops_review: typing.Callable[[], T_Result],
         resolved: typing.Callable[[], T_Result],
         _unknown_member: typing.Callable[[str], T_Result],
     ) -> T_Result:
         if self is MatchReviewStatusFilter.PENDING_CUSTOMER_REVIEW:
             return pending_customer_review()
+        if self is MatchReviewStatusFilter.PENDING_CUSTOMER_REVIEW_IN_PROGRESS:
+            return pending_customer_review_in_progress()
         if self is MatchReviewStatusFilter.PENDING_OPS_REVIEW:
             return pending_ops_review()
         if self is MatchReviewStatusFilter.RESOLVED:

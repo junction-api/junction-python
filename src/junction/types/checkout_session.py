@@ -11,20 +11,9 @@ from .checkout_session_status import CheckoutSessionStatus
 
 class CheckoutSession(UniversalBaseModel):
     """
-    The checkout session snapshot. One schema is shared by the REST
-    endpoints and the `checkout.session.*` webhook bodies.
-
-    Invariant on `payment_resource_url` / `payment_resource_client_secret`:
-    they are populated only on responses served from live workflow state over
-    the authenticated API while the session is unpaid, and are always `None`
-    everywhere else. In particular they are never populated in a webhook body
-    — the todo row, the logbook and the delivery pipeline all retain what they
-    are handed, so payment material must not enter any of them. Two things
-    hold that: `from_row` never sets the pair, and
-    `PublishCheckoutSessionEventTodoContext` strips it on validation, before
-    the event is persisted or recorded. Once the session leaves `unpaid`
-    they are `None` on every response, because the material is no longer
-    actionable.
+    A checkout session collects payment for a quote; once it is paid, the
+    order is created. The checkout session endpoints return this object, and
+    `checkout.session.*` webhooks carry it as `data`.
     """
 
     checkout_session_id: str
@@ -34,7 +23,11 @@ class CheckoutSession(UniversalBaseModel):
     """
 
     pay_before: dt.datetime
-    payment_resource_id: typing.Optional[str] = None
+    payment_resource_id: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    ID of the Stripe Checkout Session (`cs_...`) or PaymentIntent (`pi_...`) collecting payment. `null` until the payment resource is created.
+    """
+
     order_id: typing.Optional[str] = None
     order_transaction_id: typing.Optional[str] = None
     appointment_hold_status: typing.Optional[CheckoutAppointmentHoldStatus] = pydantic.Field(default=None)
@@ -43,8 +36,15 @@ class CheckoutSession(UniversalBaseModel):
     """
 
     appointment_id: typing.Optional[str] = None
-    payment_resource_url: typing.Optional[str] = None
-    payment_resource_client_secret: typing.Optional[str] = None
+    payment_resource_url: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Stripe-hosted payment page URL, for the `checkout_session` payment method. Returned only by the create, get and confirm endpoints while `status` is `unpaid`; always `null` in webhooks.
+    """
+
+    payment_resource_client_secret: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Client secret for confirming the Stripe PaymentIntent with Stripe.js, for the `payment_intent` payment method. Returned only by the create, get and confirm endpoints while `status` is `unpaid`; always `null` in webhooks.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
