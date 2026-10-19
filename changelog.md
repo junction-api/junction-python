@@ -1,3 +1,19 @@
+## [3.0.0] - 2026-10-19
+### Breaking Changes
+- **`MatchReviewStatusFilter.visit()`** — now requires a new `pending_customer_review_in_progress` handler parameter; add `pending_customer_review_in_progress=lambda: ...` to every existing `visit()` call to avoid a `TypeError`.
+
+### Added
+- **`LabTestsClient.get_version_history()`, `list_promotions()`, `get_promotion_source()`, and `get_lab_test_collection_instructions()`** — new sync and async methods for retrieving lab-test version history, sandbox-to-production promotions, and at-home phlebotomy collection instructions.
+- **`LabTestsClient.list_unmatched_result_updates()` and `create_unmatched_result_update()`** — new sync and async methods for listing and posting status/note updates on unmatched results.
+- **`CheckoutClient.create_session()`** — gains an optional `appointment` parameter (`CheckoutSessionAppointment`) to attach appointment details when creating a checkout session.
+- **New model and enum types** — `LabTestPromotion`, `LabTestPromotionSource`, `LabTestVersionSummary`, `GetLabTestVersionHistoryResponse`, `GetLabTestCollectionInstructionsResponse`, `UnmatchedResultUpdate`, `UnmatchedResultUpdateStatus`, `MatchReviewTransitionStatus`, `OrderSetParameters`, `OrderSetFastingRequirement`, and `CheckoutSessionAppointment` are now exported.
+- **`ClientFacingSleep`** — five new optional sleep-stage duration fields: `stage_asleep_second`, `stage_awake_second`, `stage_light_second`, `stage_rem_second`, and `stage_deep_second`.
+
+### Changed
+- **`LabTestsClient.get_unmatched_result()`** — return type changed from `GetUnmatchedResultResponse` to `UnmatchedResult`; update any type annotations referencing `GetUnmatchedResultResponse`.
+- **`GetUnmatchedResultResponse`** — unified as a type alias for `UnmatchedResult`; `is_stale` has been removed from `UnmatchedResult`.
+- **Optional parameters on existing methods** — `get_by_id()` gains `version` and `lab_account_id`; `update_lab_test()` gains `lab_account_id`, `marker_ids`, and `provider_ids`; `get_markers_for_order_set()` gains `parameters` (`OrderSetParameters`).
+
 ## 2.0.0 - 2026-09-24
 
 ### Added
